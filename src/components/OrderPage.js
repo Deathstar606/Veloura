@@ -77,7 +77,7 @@ function Order (props) {
       try {
         console.log("Form Data:", formData);
     
-        const response = await axios.post('http://localhost:9000/orders', formData, {
+        const response = await axios.post(baseUrl + 'orders', formData, {
           headers: {
             'Content-Type': 'application/json'
           }

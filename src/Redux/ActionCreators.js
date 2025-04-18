@@ -20,7 +20,7 @@ export const addcloth = (cloth) => ({
 export const fetchCloth = () => (dispatch) => {
     dispatch(clothesLoading(true));
   
-    return fetch("http://localhost:9000/" + "clothes")
+    return fetch(baseUrl + "clothes")
         .then(response => {
             if (response.ok) {
                 return response;
@@ -87,43 +87,6 @@ export const removeExistingOrder = (order_id) => (dispatch) => {
 };
 
 //Actual End//
-
-export const sunLoading = () => ({
-  type: ActionTypes.SUNGLASSES_LOADING
-});
-
-export const sunFailed = (errmess) => ({
-  type: ActionTypes.SUNGLASSES_FAILED,
-  payload: errmess
-});
-
-export const addsun = (dishes) => ({
-  type: ActionTypes.ADD_SUNGLASSES,
-  payload: dishes
-});
-
-export const fetchSun = () => (dispatch) => {
-  dispatch(sunLoading(true));
-
-  return fetch(baseUrl + 'sunglass')
-      .then(response => {
-          if (response.ok) {
-              return response;
-          }
-          else {
-              var error = new Error('Error ' + response.status + ': ' + response.statusText);
-              error.response = response;
-              throw error;
-          }
-      },
-      error => {
-          var errmess = new Error(error.message);
-          throw errmess;
-      })
-      .then(response => response.json())
-      .then(dishes => dispatch(addsun(dishes)))
-      .catch(error => dispatch(sunFailed(error.message)));
-}
 
 //////////////////////////
 
