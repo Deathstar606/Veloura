@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/Veloura/static/css/main.1a712860.css",
+    "main.js": "/Veloura/static/js/main.d274cb94.js",
+    "static/js/787.856d341b.chunk.js": "/Veloura/static/js/787.856d341b.chunk.js",
+    "static/media/demo.mp4": "/Veloura/static/media/demo.7f8b711a542aa1086511.mp4",
+    "static/media/about.jpg": "/Veloura/static/media/about.d8946a39d3b0d01d83f8.jpg",
+    "static/media/kyle-loftus-6TIoPIpMvLc-unsplash.jpg": "/Veloura/static/media/kyle-loftus-6TIoPIpMvLc-unsplash.61a9e65df2f0dc8afd9a.jpg",
+    "static/media/veloura.png": "/Veloura/static/media/veloura.4cc31dad649754a68037.png",
+    "static/media/sedulur-papat-ktoq-6_vr-0-unsplash.jpg": "/Veloura/static/media/sedulur-papat-ktoq-6_vr-0-unsplash.650dce099362dcd8a712.jpg",
+    "static/media/kyle-loftus-d5GlpSOAzzg-unsplash.jpg": "/Veloura/static/media/kyle-loftus-d5GlpSOAzzg-unsplash.7f27b9ba21ed1aef8486.jpg",
+    "static/media/sunglass.png": "/Veloura/static/media/sunglass.d2aa228aea456ebaa596.png",
+    "index.html": "/Veloura/index.html",
+    "main.1a712860.css.map": "/Veloura/static/css/main.1a712860.css.map",
+    "main.d274cb94.js.map": "/Veloura/static/js/main.d274cb94.js.map",
+    "787.856d341b.chunk.js.map": "/Veloura/static/js/787.856d341b.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.1a712860.css",
+    "static/js/main.d274cb94.js"
+  ]
+}
