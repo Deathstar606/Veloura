@@ -1,0 +1,39 @@
+/* Container for the breadcrumbs */
+.custom-breadcrumb {
+    padding: 10px; /* Padding around the breadcrumb items */
+    border-radius: 5px; /* Rounded corners */
+    display: flex; /* Flexbox layout for horizontal alignment */
+    align-items: center; /* Vertical alignment */
+}
+
+@media screen and (min-width: 640px) {
+    .custom-breadcrumb {
+        display: block; /* Stack items vertically on small screens */
+    }
+}
+
+/* Individual breadcrumb items */
+.custom-breadcrumb-item {
+    margin-top: 5px; /* Space between breadcrumb items */
+    color: rgb(0, 0, 0) /* Text color */
+}
+
+@media screen and (max-width: 640px) {
+    .custom-breadcrumb-item {
+        margin-top: 0;
+        margin-right: 5px; 
+    }
+    
+}
+
+/* Links inside breadcrumb items */
+.custom-breadcrumb-item a {
+    color: #000; /* Link color */
+    text-decoration: none; /* Remove underline from links */
+}
+
+/* Separator between breadcrumb items */
+.custom-breadcrumb-item + .custom-breadcrumb-item::before {
+    margin-right: 10px; /* Space after the separator */
+    color: #000; /* Separator color */
+}
