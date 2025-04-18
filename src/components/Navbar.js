@@ -160,7 +160,7 @@ const Example = (props) => {
                 <NavItem className='nav-ele'>
                   <div>Shirts</div>
                   <ul className='nav-sub' style={{ listStyleType: 'none' }}>
-                    <RouterLink style={{textDecoration: "none", color: "inherit"}} to="/home/shirts"><li className='text-center'>T Shirts</li></RouterLink>
+                    <RouterLink style={{textDecoration: "none", color: "inherit"}} to="/home/shirt"><li className='text-center'>T Shirts</li></RouterLink>
                     <RouterLink style={{textDecoration: "none", color: "inherit"}} to="/"><li className='text-center'>Polo</li></RouterLink>
                   </ul>
                 </NavItem>

@@ -108,8 +108,8 @@ const Main = (props) => {
 {/*             <ClothesForm /> */}
             <NewArr clothes={props.clothes}/>
             <Category />
-            <BestSell clothes={props.clothes}/>
             <AboutUs />
+            <BestSell clothes={props.clothes}/>
           </motion.div>
         </>
       );
@@ -137,6 +137,7 @@ const Main = (props) => {
             <Route path="/home" element={<Home />} />
             <Route path="/home/:category/:clothId" element={<ClothId clothes={props.clothes}/>} />
             <Route path="/home/shirt" element={<TShirts />} />
+            <Route path="/home/orders" element={<Order orders={props.orders.orders} removeExistingOrder={props.removeExistingOrder}/>} />
 {/*             <Route path="/home/doctors" element={<AppointmentForm />} />
             <Route path="/home/sunglass" element={<AllSun sunglasses={props.sunglass} />} />
             <Route path="/home/sunglass/men" element={<FilteredMensSun sunglasses={props.sunglass} />} />

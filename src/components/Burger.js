@@ -52,7 +52,7 @@ useEffect(() => {
                     transition={{ duration: 0.3 }}
                     style={{ paddingTop: "10px" }} // Added styles
                     >
-                      <Link to="/home/shirts" style={{textDecoration: "none", color: "inherit"}} onClick={toggleMenu}>
+                      <Link to="/home/shirt" style={{textDecoration: "none", color: "inherit"}} onClick={toggleMenu}>
                         <h5 className='text-center'>T Shirts</h5>
                       </Link>
                       <Link to="/" style={{textDecoration: "none", color: "inherit"}} onClick={toggleMenu}>

@@ -27,7 +27,7 @@ function BestSell(props) {
 
     return (
         <Container className="best-seller">
-            <div className="d-flex justify-content-center pt-1 pb-5">
+            <div className="d-flex justify-content-center pt-1 pb-3">
                 <h2 className="headerdec newarrh" id="casestu">
                     <StaggeredText text={"Best Sellers"} />
                 </h2>

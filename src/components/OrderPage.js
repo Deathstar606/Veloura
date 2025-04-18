@@ -18,7 +18,7 @@ import MediaQuery from 'react-responsive';
 
 function Order (props) {
   const [total, setTotal] = useState(0);
-  const [paymentMethod, setPaymentMethod] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('onlinePayment');
 
   const handlePaymentChange = (e) => {
     setPaymentMethod(e.target.value);
@@ -31,18 +31,17 @@ function Order (props) {
       address: '',
       email: '',
       order_type: "Online",
-      gift_stat: false,
       total: 0,
       items: []
     });
   
     useEffect(() => {
-      const total = props.orders.reduce((sum, order) => sum + order.price, 0);
+      const total = props.orders.reduce((sum, order) => sum + order.price * order.quantity, 0);
       setTotal(total)
     }, [props.orders]);
 
     useEffect(() => {
-      const savedFormData = localStorage.getItem('GformData');
+      const savedFormData = localStorage.getItem('VelouraFormData');
       if (savedFormData) {
         const parsedData = JSON.parse(savedFormData);
         setFormData((prevData) => ({
@@ -71,26 +70,33 @@ function Order (props) {
       });
     };
 
-/*   const handleSubmit = async (e) => {
-    e.preventDefault();
-    localStorage.setItem('formData', JSON.stringify(formData));
-  
-    if (paymentMethod === 'onlinePayment') {
+    const handleSubmit = async (e) => {
+      e.preventDefault(); // prevent default form behavior
+      localStorage.setItem('VelouraFormData', JSON.stringify(formData));
+    
       try {
-        const response = await axios.post('http://localhost:9000/orders/sslPay/', formData);
-        window.open(response.data.url, '_blank'); // Opens the payment URL in a new tab
+        console.log("Form Data:", formData);
+    
+        const response = await axios.post('http://localhost:9000/orders', formData, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+    
+        console.log("Order submitted successfully:", response.data);
       } catch (error) {
-        console.error("Payment Error:", error.response ? error.response.data : error.message);
+        if (error.response) {
+          // Server responded with a status other than 2xx
+          console.error("Error response:", error.response.data);
+        } else if (error.request) {
+          // No response from server
+          console.error("No response received:", error.request);
+        } else {
+          // Other error
+          console.error("Error submitting order:", error.message);
+        }
       }
-    } else {
-      try {
-        const response = await axios.post('http://localhost:9000/orders/cod/', formData);
-        console.log('Order Confirmed:', response.data);
-      } catch (error) {
-        console.error("Could not complete order:", error.response ? error.response.data : error.message);
-      }
-    }
-  }; */
+    };
 
     return (
       <motion.div
@@ -102,7 +108,7 @@ function Order (props) {
             <MediaQuery maxWidth={639}>
               <Breadcrumb items={[
                 { link: '/home', active: false },
-                { name: "Home", link: '', active: true }
+                { name: "", link: '', active: true }
               ]} />
             </MediaQuery>
             <h1 className='p-4 text-center row-header' style={{fontSize: "clamp(54px, 4vw, 100px)"}}>Confirm Your Order</h1>
@@ -118,7 +124,6 @@ function Order (props) {
                             style={{
                               border: "1px solid black",
                               backgroundColor: "transparent",
-                              borderRadius: "10px"
                             }}
                             type="text"
                             name="firstName"
@@ -135,7 +140,6 @@ function Order (props) {
                             style={{
                                 border: "1px solid black",
                                 backgroundColor: "transparent",
-                                borderRadius: "10px"
                               }}
                             type="text"
                             name="lastName"
@@ -151,7 +155,6 @@ function Order (props) {
                             style={{
                                 border: "1px solid black",
                                 backgroundColor: "transparent",
-                                borderRadius: "10px"
                               }}
                             type="text"
                             name="phoneNumber"
@@ -168,7 +171,6 @@ function Order (props) {
                             style={{
                                 border: "1px solid black",
                                 backgroundColor: "transparent",
-                                borderRadius: "10px"
                               }}
                             type="text"
                             name="address"
@@ -185,7 +187,6 @@ function Order (props) {
                             style={{
                                 border: "1px solid black",
                                 backgroundColor: "transparent",
-                                borderRadius: "10px"
                               }}
                             type="email"
                             name="email"
@@ -198,20 +199,34 @@ function Order (props) {
                       </FormGroup>
                     </Form>
                   </Col>
-                <Col md={5} className="p-3 m-3" style={{ border: "black solid 0.5px", borderRadius: "10px" }}>
+                <Col md={5} className="p-3 m-3" style={{ border: "black solid 0.5px" }}>
                   <ul className='p-3' style={{ padding: 0, listStyleType: 'none' }}>
                     {props.orders.length > 0 ? (
                       props.orders.map((order, index) => (
                         <React.Fragment key={index}>
                           <Row style={{ marginBottom: '20px' }}>
                             <Col md={4} className="mx-0">
-                              <CardImg className='mb-4' src={baseUrl + order.image} alt={order.name} />
+                              <CardImg className='mb-4' src={order.image} alt={order.name} />
                             </Col>
                             <Col md={8}>
                               <strong>{order.name}<br /></strong>
-                              <strong>Lens Material:</strong> {order.lensMat} + 0 Tk<br />
-                              <strong>Left Eye Power:</strong> {order.leftEye} diapter<br />
-                              <strong>Right Eye Power:</strong> {order.rightEye} diapter<br />
+                              <strong>Size</strong> {order.size}<br />
+                              <strong>Quantity</strong> {order.quantity}<br />
+                              <div className='d-flex'>
+                                <p className='mr-2'>Color </p>
+                                <div className='color-options d-flex justify-content-center'>
+                                  <div
+                                    className="color-box"
+                                    style={{
+                                        backgroundColor: order.color,
+                                        width: '25px',
+                                        height: '25px',
+                                        marginRight: '10px',
+                                        borderRadius: '50%',
+                                    }}
+                                  />
+                                </div>
+                              </div>
                               <strong>Price:</strong> {order.price} Tk<br />
                             </Col>
                           </Row>
@@ -254,7 +269,7 @@ function Order (props) {
                   <div className='pb-3 pt-3 home-butt'>
                     <button
                       className='butt'
-                      /* onClick={handleSubmit} */
+                      onClick={handleSubmit}
                     >
                       Confirm Order
                     </button>
