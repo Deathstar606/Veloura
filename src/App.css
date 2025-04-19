@@ -3,6 +3,18 @@ body {
   font-family: 'Abel', sans-serif;
 }
 
+.logo {
+  height: 80px; 
+  width: 80px; 
+}
+
+@media screen and (max-width: 639px) {
+  .logo {
+    position: absolute;
+    left: 0
+  }
+}
+
 .modal-back {
   position: fixed;
   overflow: hidden;

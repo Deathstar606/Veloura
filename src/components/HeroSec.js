@@ -98,7 +98,7 @@ const HeroSec = () => {
     const textArray = [
         "Style",
         "Class",
-        "Prestige",
+        "Desire",
       ];
 
       return (

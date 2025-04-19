@@ -154,7 +154,7 @@ const Example = (props) => {
       <div className='d-flex justify-content-center'>
         <div className='nav-c pt-2 pb-2'>
           <Navbar light expand="md">
-            <NavbarBrand href="/" className='text-dark mr-auto'><img src={logo} style={{height: "80px", width: "80px"}}/></NavbarBrand>
+            <NavbarBrand href="/home" className='text-dark mr-auto'><img className='logo' src={logo}/></NavbarBrand>
             <MediaQuery minWidth={640}>
               <Nav navbar className="mx-auto">
                 <NavItem className='nav-ele'>
