@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/Veloura/static/css/main.1a712860.css",
-    "main.js": "/Veloura/static/js/main.d274cb94.js",
+    "main.css": "/Veloura/static/css/main.1b56c771.css",
+    "main.js": "/Veloura/static/js/main.ab6136e0.js",
     "static/js/787.856d341b.chunk.js": "/Veloura/static/js/787.856d341b.chunk.js",
     "static/media/demo.mp4": "/Veloura/static/media/demo.7f8b711a542aa1086511.mp4",
     "static/media/about.jpg": "/Veloura/static/media/about.d8946a39d3b0d01d83f8.jpg",
@@ -11,12 +11,12 @@
     "static/media/kyle-loftus-d5GlpSOAzzg-unsplash.jpg": "/Veloura/static/media/kyle-loftus-d5GlpSOAzzg-unsplash.7f27b9ba21ed1aef8486.jpg",
     "static/media/sunglass.png": "/Veloura/static/media/sunglass.d2aa228aea456ebaa596.png",
     "index.html": "/Veloura/index.html",
-    "main.1a712860.css.map": "/Veloura/static/css/main.1a712860.css.map",
-    "main.d274cb94.js.map": "/Veloura/static/js/main.d274cb94.js.map",
+    "main.1b56c771.css.map": "/Veloura/static/css/main.1b56c771.css.map",
+    "main.ab6136e0.js.map": "/Veloura/static/js/main.ab6136e0.js.map",
     "787.856d341b.chunk.js.map": "/Veloura/static/js/787.856d341b.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.1a712860.css",
-    "static/js/main.d274cb94.js"
+    "static/css/main.1b56c771.css",
+    "static/js/main.ab6136e0.js"
   ]
 }
