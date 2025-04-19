@@ -186,7 +186,7 @@ const Deats = (props) => {
         );
     } else if (props.deats?.color?.length > 0 && colors) {
         return (
-            <Container className='mt-3' style={{ maxWidth: "90%" }}>
+            <Container style={{ maxWidth: "90%" }}>
                 <MediaQuery maxWidth={639}>
                     <Row>
                         <Breadcrumb items={[

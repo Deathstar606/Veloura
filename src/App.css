@@ -8,13 +8,6 @@ body {
   width: 80px; 
 }
 
-@media screen and (max-width: 639px) {
-  .logo {
-    position: absolute;
-    left: 0
-  }
-}
-
 .modal-back {
   position: fixed;
   overflow: hidden;
@@ -106,6 +99,12 @@ body {
   width: 88%;
   position: relative;
   z-index: 2;
+}
+
+@media (max-width: 639px) {
+  .nav-c {
+    width: 100%;
+  }
 }
 
 .best-seller {
