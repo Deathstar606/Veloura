@@ -37,7 +37,6 @@ useEffect(() => {
           <div className='d-flex justify-content-center p-1'>
             <li>
               <NavItem
-                activeClassName="active"
                 onClick={toggleShirt}
               >
                 <div className={`burg-menu pr-2 pl-2 ${activeLink === '/menu' ? 'active' : ''}`}>

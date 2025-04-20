@@ -137,20 +137,12 @@ const HeroSec = () => {
           />
     
           {/* Content */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              paddingTop: "28vh",
-              height: "100%",
-              textAlign: "center",
-            }}
-          >
+          <div className="hero_layout">
             <div>
               <h1 className="d-flex justify-content-center pl-3">
                 We represent <span className="pl-2"><TextCycle texts={textArray} /></span>
               </h1>
-              <div className="d-flex justify-content-center pt-4">
+              <div className="d-flex justify-content-center pt-2">
                 <div className="butt" style={{ display: "inline-block" }}>
                   Check out
                 </div>

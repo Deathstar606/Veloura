@@ -34,25 +34,6 @@ function BestSell(props) {
             </div>
                 <Row className="pb-5 d-flex justify-content-center">
                     {products}
-
-{/*                     <MediaQuery minWidth={640}>
-                        <Swiper
-                            slidesPerView={4}
-                            spaceBetween={50}
-                        >
-                            {glasses}
-                        </Swiper>
-                    </MediaQuery>
-                    <MediaQuery maxWidth={639}>
-                        <Swiper
-                            slidesPerView={1}
-                            spaceBetween={50}
-                            autoplay={{ delay: 3000, disableOnInteraction: false }}
-                            modules={[Autoplay]}
-                        >
-                            {glasses}
-                        </Swiper>
-                    </MediaQuery> */}
                 </Row>
         </Container>
     );

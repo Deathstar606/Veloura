@@ -30,7 +30,6 @@ function Order (props) {
       phoneNumber: '',
       address: '',
       email: '',
-      order_type: "Online",
       total: 0,
       items: []
     });
@@ -77,7 +76,7 @@ function Order (props) {
       try {
         console.log("Form Data:", formData);
     
-        const response = await axios.post(baseUrl + 'orders', formData, {
+        const response = await axios.post("http://localhost:9000/" + 'orders', formData, {
           headers: {
             'Content-Type': 'application/json'
           }

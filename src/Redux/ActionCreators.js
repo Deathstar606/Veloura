@@ -38,7 +38,45 @@ export const fetchCloth = () => (dispatch) => {
         .then(response => response.json())
         .then(clothes => dispatch(addcloth(clothes)))
         .catch(error => dispatch(clothFailed(error.message)));
+}
+
+export const fetchProdReq = () => (dispatch) => {
+    dispatch(prodreqLoading(true));
+  
+    const token = localStorage.getItem("token"); // Retrieve token from localStorage
+
+    return fetch("http://localhost:9000/" + "orders", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `bearer ${token}` // Attach token here
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log("HEy NIGGA");
+            return response.json();
+        } else {
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+    })
+    .then(clothes => dispatch(addProdreq(clothes)))
+    .catch(error => dispatch(prodreqFailed(error.message)));
   }
+
+export const prodreqLoading = () => ({
+    type: ActionTypes.PRODREQ_LOADING
+});
+  
+export const prodreqFailed = (errmess) => ({
+    type: ActionTypes.PRODREQ_FAILED,
+    payload: errmess
+});
+  
+export const addProdreq = (cloth) => ({
+    type: ActionTypes.ADD_PRODREQ,
+    payload: cloth
+});
 
 export const addOrders = (orders) => ({
     type: ActionTypes.ADD_ORDERS,
@@ -86,10 +124,6 @@ export const removeExistingOrder = (order_id) => (dispatch) => {
     }
 };
 
-//Actual End//
-
-//////////////////////////
-
 export const requestLogin = (creds) => {
     return {
         type: ActionTypes.LOGIN_REQUEST,
@@ -115,7 +149,7 @@ export const loginUser = (creds) => (dispatch) => {
     // We dispatch requestLogin to kickoff the call to the API
     dispatch(requestLogin(creds))
 
-    return fetch('/users/login', {
+    return fetch('http://localhost:9000/users/login', {
         method: 'POST',
         headers: { 
             'Content-Type':'application/json',
@@ -141,6 +175,7 @@ export const loginUser = (creds) => (dispatch) => {
             localStorage.setItem('token', response.token);
             localStorage.setItem('creds', JSON.stringify(creds));
             dispatch(receiveLogin(response));
+            dispatch(fetchProdReq());
         }
         else {
             var error = new Error('Error ' + response.status);
@@ -170,3 +205,6 @@ export const logoutUser = () => (dispatch) => {
     localStorage.removeItem('creds');
     dispatch(receiveLogout())
 }
+
+//Actual End//
+
