@@ -17,28 +17,23 @@ export const addcloth = (cloth) => ({
     payload: cloth
 });
   
-export const fetchCloth = () => (dispatch) => {
+export const fetchCloth = () => async (dispatch) => {
     dispatch(clothesLoading(true));
   
-    return fetch(baseUrl + "clothes")
-        .then(response => {
-            if (response.ok) {
-                return response;
-            }
-            else {
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
-            }
-        },
-        error => {
-            var errmess = new Error(error.message);
-            throw errmess;
-        })
-        .then(response => response.json())
-        .then(clothes => dispatch(addcloth(clothes)))
-        .catch(error => dispatch(clothFailed(error.message)));
-}
+    try {
+      const response = await fetch(baseUrl + "clothes");
+  
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+  
+      const clothes = await response.json();
+      
+      dispatch(addcloth(clothes));
+    } catch (error) {
+      dispatch(clothFailed(error.message));
+    }
+};  
 
 export const fetchProdReq = () => (dispatch) => {
     dispatch(prodreqLoading(true));
@@ -116,7 +111,7 @@ export const addNewOrder = (order) => (dispatch) => {
 export const removeExistingOrder = (order_id) => (dispatch) => {
     try {
         let ordersFromStorage = JSON.parse(localStorage.getItem('Velorders')) || [];
-        ordersFromStorage = ordersFromStorage.filter(o => !(o._id === order_id));
+        ordersFromStorage = ordersFromStorage.filter(o => !(o.cart_id === order_id));
         localStorage.setItem('Velorders', JSON.stringify(ordersFromStorage));
         dispatch(fetchOrders());
     } catch (error) {

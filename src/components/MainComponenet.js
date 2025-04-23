@@ -1,17 +1,19 @@
 import React, { useEffect } from 'react';
 import HeroSec from './HeroSec';
-import NewArr from "./NewArrival";
+import BestD from "./BestDeals";
 import Deats from './Details';
 import Order from './OrderPage';
 import ProdList from './ProductList';
-import BestSell from './BestSellers';
+import NewArr from './NewArrival';
 import AdminPanel from './Admin Forms/AdminPanel';
-import ClothesForm from './Admin Forms/ClothUpdateForm';
 /* import RenderItem from './Featured'; */
 import AboutUs from "./AboutUs";
 import Category from "./Category";
 import Example from './Navbar';
 import Footer from './Footer';
+
+import Success from './PaymentStats/Success';
+
 import { Link, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { fetchCloth, fetchOrders, fetchProdReq, addNewOrder, removeExistingOrder, loginUser, logoutUser } from '../Redux/ActionCreators';
@@ -109,11 +111,10 @@ const Main = (props) => {
             animate= {{x: 0, opacity: 1}}
             exit= {{x: -1000, opacity: 0}}>
             <HeroSec />
-{/*             <ClothesForm /> */}
-            <NewArr clothes={props.clothes}/>
+            <BestD clothes={props.clothes}/>
             <Category />
             <AboutUs />
-            <BestSell clothes={props.clothes}/>
+            <NewArr clothes={props.clothes}/>
           </motion.div>
         </>
       );
@@ -141,7 +142,8 @@ const Main = (props) => {
             <Route path="/home/:category/:clothId" element={<ClothId clothes={props.clothes}/>} />
             <Route path="/home/shirt" element={<TShirts />} />
             <Route path="/home/orders" element={<Order orders={props.orders.orders} removeExistingOrder={props.removeExistingOrder}/>} />
-            <Route path="/home/admin" element={<AdminPanel auth={props.auth} prodreq={props.prodreq.prodreq} loginUser={props.loginUser} logoutUser={props.logoutUser}/>} />
+            <Route path="/home/admin" element={<AdminPanel auth={props.auth} clothes={props.clothes.clothes} prodreq={props.prodreq.prodreq} loginUser={props.loginUser} logoutUser={props.logoutUser}/>} />
+            <Route path="/home/paystat/:tranId" element={<Success />} />
 {/*             <Route path="/home/doctors" element={<AppointmentForm />} />
             <Route path="/home/sunglass" element={<AllSun sunglasses={props.sunglass} />} />
             <Route path="/home/sunglass/men" element={<FilteredMensSun sunglasses={props.sunglass} />} />

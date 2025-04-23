@@ -1,6 +1,77 @@
 import React, { useState } from "react";
 import { Container, Row, Col, CardImg, Form, FormGroup, Label, Input, Button } from "reactstrap";
+import ClothesForm from '../Admin Forms/ClothUpdateForm';
 import { motion, AnimatePresence } from "framer-motion";
+
+const CategoriesList = ({ data }) => {
+  return (
+    <Col md={12}>
+      {data.map((categoryEntry) => (
+        <div key={categoryEntry.category} className="mb-8">
+          <h2 className="text-2xl font-bold mb-4 capitalize" style={{color: "rgb(255, 153, 0)"}}>{categoryEntry.category}</h2>
+
+          <Row>
+            {categoryEntry.items.map((item, index) => (         
+              <ItemCard key={index} item={item} />         
+            ))}
+          </Row>
+        </div>
+      ))}
+    </Col>
+  );
+};
+
+const ItemCard = ({ item }) => {
+  // Safely extract the first image of the first color
+  const firstColorKey = item.images ? Object.keys(item.images)[0] : null;
+  const firstImage = firstColorKey && item.images[firstColorKey]?.[0];
+
+  return (
+    <Col md={3} style={{border: "1px solid black"}} className="mb-4 pt-2 pb-2">
+      {firstImage && (
+        <div>
+          <img
+            src={firstImage}
+            alt={`${item.name} preview`}
+            style={{ width: "100%", height: "auto" }}
+          />
+        </div>
+      )}
+      <h3 className="text-lg font-semibold mt-2">{item.name}</h3>
+      <p><strong>Best:</strong> {item.best ? "Yes" : "No"}</p>
+      <div className="color-options d-flex mb-3">
+        {item.color.map((col, index) => (
+          <div
+            key={index}
+            className="color-box"
+            style={{
+              backgroundColor: col,
+              width: '25px',
+              height: '25px',
+              marginRight: '10px',
+              borderRadius: '50%',
+              cursor: 'pointer'
+            }}
+          />
+        ))}
+      </div>
+      {/* <p><strong>Sizes:</strong> {item.size.join(", ")}</p> */}
+      <p><strong>Price:</strong> ${item.price}</p>
+      <p><strong>Discount:</strong> {item.discount ? item.discount : "No Discount"}</p>
+      <div className="d-flex">
+        <Button outline size="sm" color="danger" className="mr-2">
+          Remove
+        </Button>
+        <Button outline size="sm" color="secondary" className="mr-2">
+          Add discount
+        </Button>
+        <Button outline size="sm" color="secondary" className="mr-2">
+          Best
+        </Button>
+      </div>
+    </Col>
+  );
+};
 
 const Orders = ({ order }) => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -98,7 +169,12 @@ const Orders = ({ order }) => {
 
 function AdminPanel(props) {
     const [isComplete, setIsComplete] = useState("paid");
+    const [admin, setAdmin] = useState("orders");
     const [credentials, setCredentials] = useState({ username: "", password: "" });
+
+    const ChangeAdminPanel = (select) => {
+        setAdmin(select);
+    }
 
     const handleChangeAdmin = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -162,39 +238,75 @@ function AdminPanel(props) {
                         </div>
                     </Container>
                     <Container className="mt-4 pt-4">
-                        <div className="d-flex pt-3 pb-3">
-                            <div
-                                className="mr-3 butt"
-                                style={{ backgroundColor: isComplete === "unpaid" ? "orange" : "" }}
-                                onClick={() => handleClick("unpaid")}
+                      <Row>
+                          {/* Left Sidebar - Two Custom Buttons */}
+                          <Col md={3} xs={12} className="mb-3">
+                              <div className="d-flex justify-content-center mt-3">
+                                <button
+                                  className="mb-2 butt"
+                                  style={{ backgroundColor: admin === 'orders' ? 'orange' : '' }}
+                                  onClick={() => ChangeAdminPanel('orders')}
                                 >
-                                Unpaid
-                            </div>
-                            <button
-                                className="mr-3 butt"
-                                style={{ backgroundColor: isComplete === "paid" ? "orange" : "" }}
-                                onClick={() => handleClick("paid")}
+                                  Orders
+                                </button>
+                                <button
+                                  className="mb-2 butt"
+                                  style={{ backgroundColor: admin === 'inventory' ? 'orange' : '' }}
+                                  onClick={() => ChangeAdminPanel('inventory')}
                                 >
-                                Paid
-                            </button>
-                            <button
-                                className="mr-3"
-                                style={{ backgroundColor: isComplete === "delivered" ? "orange" : "" }}
-                                onClick={() => handleClick("delivered")}
-                                >
-                                Delivered
-                            </button>
-                        </div>
-                        <Row>
-                            {isComplete === "paid"
-                                ? Comp
-                                : isComplete === "unpaid"
-                                ? inComp
-                                : isComplete === "delivered"
-                                ? Delivered
-                                : null}
-                        </Row> 
-                    </Container>              
+                                  Inventory
+                                </button>
+                              </div>
+                          </Col>
+
+                          {/* Main Content Area */}
+                          <Col md={9}>
+                            {admin === 'orders' && (
+                              <>
+                                <div className="d-flex pt-3 pb-3">
+                                  <div
+                                    className="mr-3 butt"
+                                    style={{ backgroundColor: isComplete === 'unpaid' ? 'orange' : '' }}
+                                    onClick={() => handleClick('unpaid')}
+                                  >
+                                    Unpaid
+                                  </div>
+                                  <button
+                                    className="mr-3 butt"
+                                    style={{ backgroundColor: isComplete === 'paid' ? 'orange' : '' }}
+                                    onClick={() => handleClick('paid')}
+                                  >
+                                    Paid
+                                  </button>
+                                  <button
+                                    className="mr-3"
+                                    style={{ backgroundColor: isComplete === 'delivered' ? 'orange' : '' }}
+                                    onClick={() => handleClick('delivered')}
+                                  >
+                                    Delivered
+                                  </button>
+                                </div>
+                                <Row>
+                                  {isComplete === 'paid'
+                                    ? Comp
+                                    : isComplete === 'unpaid'
+                                    ? inComp
+                                    : isComplete === 'delivered'
+                                    ? Delivered
+                                    : null}
+                                </Row>
+                              </>
+                            )}
+
+                            {admin === 'inventory' &&
+                              <Row>
+                                <CategoriesList data={props.clothes} />
+                                <ClothesForm />
+                              </Row>                               
+                            }
+                          </Col>
+                      </Row>
+                    </Container>             
                 </>
             ) : (
                 <Container className="p-4">

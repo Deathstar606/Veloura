@@ -61,6 +61,8 @@ const ProductList = (props) => {
             return b.price - a.price;
           } else if (criteria === "Awareness") {
             return new Date(b.createdAt) - new Date(a.createdAt);
+          } else if (criteria === "Popularity") {
+            return b.ordered - a.ordered; // More ordered items first
           }
           return 0;
         });
@@ -99,7 +101,7 @@ const ProductList = (props) => {
                     <MediaQuery minWidth={639}>
                         <Col md={2} className="sidebar">
                             <div className="sidebar-content">
-                                <h4 className='text-center'>Filter</h4>
+                                <h5 className='text-center'>Filter</h5>
                                 <Form>
                                     <FormGroup>
                                         <Label className='pb-2' for="priceRange">Range</Label>
@@ -132,61 +134,18 @@ const ProductList = (props) => {
                                         </div>
                                     </FormGroup>
                                     <Row className='pt-3'>
-                                        <Col md={6}>
-                                            <h5
-                                                className="mt-2 pb-1 text-center"
-                                                style={{
-                                                whiteSpace: "nowrap",
-                                                cursor: "pointer",
-                                                borderBottom: criteria === "Awareness" ? "2px solid #DD6410" : "none"
-                                                }}
-                                                onClick={() => ChangeCriteria("Awareness")}
-                                            >
-                                                Awareness
-                                            </h5>
-                                        </Col>
-
-                                        <Col md={6}>
-                                            <h5
-                                                className="mt-2 pb-1 text-center"
-                                                style={{
-                                                whiteSpace: "nowrap",
-                                                cursor: "pointer",
-                                                borderBottom: criteria === "Popularity" ? "2px solid #DD6410" : "none"
-                                                }}
-                                                onClick={() => ChangeCriteria("Popularity")}
-                                            >
-                                                Popularity
-                                            </h5>
-                                        </Col>
-
-                                        <Col md={6}>
-                                            <h5
-                                                className="mt-2 pb-1 text-center"
-                                                style={{
-                                                whiteSpace: "nowrap",
-                                                cursor: "pointer",
-                                                borderBottom: criteria === "High to Low" ? "2px solid #DD6410" : "none"
-                                                }}
-                                                onClick={() => ChangeCriteria("High to Low")}
-                                            >
-                                                High to Low
-                                            </h5>
-                                        </Col>
-
-                                        <Col md={6}>
-                                            <h5
-                                                className="mt-2 pb-1 text-center"
-                                                style={{
-                                                whiteSpace: "nowrap",
-                                                cursor: "pointer",
-                                                borderBottom: criteria === "Low to High" ? "2px solid #DD6410" : "none"
-                                                }}
-                                                onClick={() => ChangeCriteria("Low to High")}
-                                            >
-                                                Low to High
-                                            </h5>
-                                        </Col>
+                                        {["Awareness", "Popularity", "High to Low", "Low to High"].map((item, index) => (
+                                            <Col md={6} key={index}>
+                                                <h6
+                                                    className={`criteria-option mt-2 pb-1 ${
+                                                        criteria === item ? "selected" : "hover-effect"
+                                                    }`}
+                                                    onClick={() => ChangeCriteria(item)}
+                                                >
+                                                    {item}
+                                                </h6>
+                                            </Col>
+                                        ))}
                                     </Row>           
                                 </Form>
                             </div>
@@ -250,57 +209,57 @@ const ProductList = (props) => {
                                     </Form>
                                     <Row>
                                         <Col xs={6}>
-                                            <h5
+                                            <h6
                                                 className="mt-2 pb-1 text-center"
                                                 style={{
                                                 whiteSpace: "nowrap",
                                                 cursor: "pointer",
-                                                borderBottom: criteria === "Awareness" ? "2px solid #DD6410" : "none"
+                                                color: criteria === "Awareness" ? "rgb(255, 153, 0)" : "black"
                                                 }}
                                                 onClick={() => ChangeCriteria("Awareness")}
                                             >
                                                 Awareness
-                                            </h5>                                        
+                                            </h6>                                        
                                         </Col>
                                         <Col xs={6}>
-                                            <h5
+                                            <h6
                                                 className="mt-2 pb-1 text-center"
                                                 style={{
                                                 whiteSpace: "nowrap",
                                                 cursor: "pointer",
-                                                borderBottom: criteria === "Popularity" ? "2px solid #DD6410" : "none"
+                                                color: criteria === "Popularity" ? "rgb(255, 153, 0)" : "black"
                                                 }}
                                                 onClick={() => ChangeCriteria("Popularity")}
                                             >
                                                 Popularity
-                                            </h5>                                        
+                                            </h6>                                        
                                         </Col>
                                         <Col xs={6}>
-                                            <h5
+                                            <h6
                                                 className="mt-2 pb-1 text-center"
                                                 style={{
                                                 whiteSpace: "nowrap",
                                                 cursor: "pointer",
-                                                borderBottom: criteria === "High to Low" ? "2px solid #DD6410" : "none"
+                                                color: criteria === "High to Low" ? "rgb(255, 153, 0)" : "black"
                                                 }}
                                                 onClick={() => ChangeCriteria("High to Low")}
                                             >
                                                 High to Low
-                                            </h5>
+                                            </h6>
                                         </Col>
 
                                         <Col xs={6}>
-                                            <h5
+                                            <h6
                                                 className="mt-2 pb-1 text-center"
                                                 style={{
                                                 whiteSpace: "nowrap",
                                                 cursor: "pointer",
-                                                borderBottom: criteria === "Low to High" ? "2px solid #DD6410" : "none"
+                                                color: criteria === "Low to High" ? "rgb(255, 153, 0)" : "black"
                                                 }}
                                                 onClick={() => ChangeCriteria("Low to High")}
                                             >
                                                 Low to High
-                                            </h5>
+                                            </h6>
                                         </Col>
                                     </Row>
                                 </div>

@@ -84,21 +84,26 @@ export const OrderBar = ({ orders, handleOrdPage, removeOrder }) => {
                     </Col>
                   </Row>
                   <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px', marginTop: "10px" }}>
-                    <button className='butt' outline onClick={() => removeOrder(order._id)}>Remove</button>
+                    <button className='butt' outline onClick={() => removeOrder(order.cart_id)}>Remove</button>
                   </div>
                 </React.Fragment>
               ))
             ) : (
-              <h3 className='text-center'>No items in cart</h3>
+              <>
+                <h3 className='text-center pt-4'>No items in cart</h3>
+                <p className='text-center text-grey'>Start adding products</p>
+              </>
             )}
           </ul>
         </div>
-        <div className='p-3'>
-          <div className='ml-3 mb-2 ml-2'>Total: {total} Tk </div>
-          <RouterLink to="home/orders">
-            <button onClick={handleOrdPage} className='butt ml-3'>Place Order</button>
-          </RouterLink>
-        </div>
+        {orders.length > 0 && (
+          <div className='p-3'>
+            <div className='ml-3 mb-2 ml-2'>Total: {total} Tk </div>
+            <RouterLink to="home/orders">
+              <button onClick={handleOrdPage} className='butt ml-3'>Place Order</button>
+            </RouterLink>
+          </div>
+        )}
       </motion.div>
     </motion.div>
   );

@@ -1,61 +1,49 @@
 import React from "react";
-import { Container, Row } from "reactstrap";
-import { StaggeredText } from "./Animations";
 import { Product } from "./Card";
-import "swiper/css";
-import "swiper/css/navigation";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from 'swiper/modules';
-import MediaQuery from "react-responsive";
-import { Loading } from "./LoadingComponent";
+import { Container, Row, Col } from "reactstrap";
+import { StaggeredText } from "./Animations";
 import "./card.css";
+import { Loading } from "./LoadingComponent";
 
 function NewArr(props) {
     if (props.clothes.isLoading) {
-        return (
-            <Loading/>
-        )
+        console.log("Loading...🤣");
+        return <Loading />;
     }
 
-    const products = props.clothes.clothes.flatMap((category) =>
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+    const newItems = props.clothes.clothes.flatMap((category) =>
         category.items
-            .filter((item) => item.new)
-            .map((cloth, index) => (
-                <SwiperSlide key={`${category.category}-${index}`}>
-                    <Product category={category.category} child={cloth} />
-                </SwiperSlide>
-            ))
-    );
+            .filter((item) => {
+                return item.createdAt && new Date(item.createdAt) >= oneMonthAgo;
+            })
+            .map((cloth) => ({
+                category: category.category,
+                cloth,
+            }))
+    ).slice(0, 6);
+    
 
     return (
-        <Container style={{ maxWidth: "88%" }}>
-            <div className="d-flex justify-content-center pt-3 pb-5">
+        <Container className="best-seller">
+            <div className="d-flex justify-content-center pt-1 pb-3">
                 <h2 className="headerdec newarrh" id="casestu">
-                    <StaggeredText text={"New Addition"} />
+                    <StaggeredText text={"New Arrivals"} />
                 </h2>
             </div>
-                <Row className="mt-1">
-                    <MediaQuery minWidth={640}>
-                        <Swiper
-                            slidesPerView={4}
-                            spaceBetween={20}
-                            navigation={true}
-                        >
-                            {products}
-                        </Swiper>
-                    </MediaQuery>
-                    <MediaQuery maxWidth={639}>
-                        <Swiper
-                            slidesPerView={1}
-                            spaceBetween={50}
-                            autoplay={{ delay: 3000, disableOnInteraction: false }}
-                            navigation={true}
-                            modules={[Autoplay]}
-                        >
-                            {products}
-                        </Swiper>
-                    </MediaQuery>
-                </Row>
+            <Row className="pb-5 d-flex justify-content-center">
+                {newItems.length > 0 ? (
+                    newItems.map((item, index) => (
+                        <Col key={index} md={3} xs={6} className="mt-4">
+                            <Product category={item.category} child={item.cloth} />
+                        </Col>
+                    ))
+                ) : (
+                    <h4 className="text-center w-100 py-4">No new arrivals</h4>
+                )}
+            </Row>
         </Container>
     );
 }
