@@ -132,7 +132,7 @@ body {
   padding-bottom: 0.25rem; /* pb-1 */
   text-align: center;
   border-bottom: none;
-  transition: border-bottom 0.2s ease;
+  transition: border-bottom 0.1s ease;
 }
 
 .criteria-option.hover-effect:hover {

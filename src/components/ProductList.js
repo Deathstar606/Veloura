@@ -2,8 +2,6 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Container, Row, Col, Form, FormGroup, Label } from 'reactstrap';
 import { Product } from './Card';
 import { Breadcrumb } from './BreadCrumb';
-import { Loading } from "./LoadingComponent";
-import { Link } from "react-router-dom";
 import { BsX  } from "react-icons/bs";
 import 'swiper/css';
 import 'swiper/css/effect-fade';
@@ -123,6 +121,7 @@ const ProductList = (props) => {
                                                 renderThumb={({ props }) => (
                                                     <div
                                                         {...props}
+                                                        style={{backgroundColor: "transparent", border: "2px solid rgb(255, 153, 0)", borderRadius: "50%", width: "20px", height: "20px"}}
                                                         className="thumb"
                                                     />
                                                 )}
@@ -196,6 +195,7 @@ const ProductList = (props) => {
                                                     renderThumb={({ props }) => (
                                                         <div
                                                             {...props}
+                                                            style={{backgroundColor: "transparent", border: "2px solid rgb(255, 153, 0)", borderRadius: "50%", width: "20px", height: "20px"}}
                                                             className="thumb"
                                                         />
                                                     )}
@@ -266,7 +266,7 @@ const ProductList = (props) => {
                             </motion.div>
                         </AnimatePresence>
                     )}   
-                        <Col md={10}>
+                        <Col md={10} style={{minHeight: "50vh"}}>
                             <Row className='mt-3'>
                                 {catdes}
                             </Row>
