@@ -15,24 +15,13 @@ const VelouraCol = () => {
         alignItems: "center",
         overflow: "hidden",
         backgroundColor: "#241913",
+        backgroundImage: `url(${about})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center 20%",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
       }}
     >
-      {/* Preserved & Compressed Background Image */}
-      <img
-        src={about}
-        alt="Veloura Collection Editorial"
-        loading="lazy"
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          objectPosition: "center 20%",
-          zIndex: 0,
-        }}
-      />
-
       {/* Atmospheric gradient */}
       <div
         aria-hidden="true"
