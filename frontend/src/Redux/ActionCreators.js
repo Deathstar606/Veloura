@@ -4,7 +4,7 @@ import { baseUrl } from "./shared/baseurl"
 //Actual//
 
 export const clothesLoading = () => ({
-    type: ActionTypes.CLOTHES_FAILED
+    type: ActionTypes.CLOTHES_LOADING
 });
   
 export const clothFailed = (errmess) => ({

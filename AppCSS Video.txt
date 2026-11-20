@@ -1,0 +1,485 @@
+/*Starts Here*/
+body {
+  font-family: 'Abel', sans-serif;
+}
+
+.logo {
+  height: 80px; 
+  width: 80px; 
+}
+
+.hero_layout {
+  display: flex;
+  padding-top: 25vh;
+  justify-content: center;
+  text-align: center;
+  height: 80%
+}
+
+@media screen and (max-width: 1366px) {
+  .hero_layout {
+    padding-top: 20vh;
+  }
+  
+}
+
+.hero_mar {
+  margin-top: 40vh;
+}
+
+@media screen and (max-width: 1366px) {
+  .hero_mar {
+    margin-top: 34vh;
+  }
+  
+}
+
+@media screen and (max-width: 639px) {
+  .hero_mar {
+    margin-top: none;
+    bottom: 0;  
+  }
+  
+}
+
+.modal-back {
+  position: fixed;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+.butt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;           /* 👈 This makes width wrap around the text */
+  border: 2px solid rgb(0, 0, 0);
+  color: rgb(0, 0, 0);
+  background: none;
+  padding: 5px 30px;
+  font-size: 17px;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: 0.8s;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.butt:hover {
+  color: rgb(207, 207, 207);
+  border: 2px solid rgb(255, 153, 0);
+  background: black;
+}
+
+.butt::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 0%;
+  background: #000000;
+  z-index: -1;
+  transition: 0.8s;
+}
+
+@media (min-width: 640px) {
+  .cat-container {
+    min-width: 90%;
+  }
+}
+
+@media (min-width: 640px) {
+  .nav-container {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.nav-c {
+  width: 88%;
+  position: relative;
+  z-index: 10;
+}
+
+@media (max-width: 639px) {
+  .nav-c {
+    width: 100%;
+    z-index: 1;
+  }
+}
+
+.nav-ele {
+  cursor: pointer;
+  padding: 6px 20px 0px 20px;
+  display: inline-block;
+  color: inherit;
+  justify-content: center;
+  transition: all ease 0.3s;
+  position: relative;
+}
+
+.nav-label {
+  text-decoration: none;
+  color: inherit;
+}
+
+.nav-ele:hover .nav-label {
+  border-bottom: 3px solid rgb(255, 153, 0);
+}
+
+.nav-sub {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 10px;
+  width: 160px;
+  padding: 10px 0px;
+  background-color: #ffffff;
+  box-shadow: 0 5px 25px #c4c4c4;
+  transition: opacity 0.5s ease, visibility 0.5s ease, margin-top 0.5s ease;
+  margin-top: 0px;
+  z-index: 999;
+}
+
+/* <<< IMPORTANT >>> */
+/* When hovering over .nav-ele (either nav-label or nav-sub), keep showing the dropdown */
+.nav-ele:hover .nav-sub {
+  visibility: visible;
+  opacity: 1;
+  margin-top: 6px;
+}
+
+.sub-lable {
+  position: relative;
+  display: inline-block;
+}
+
+.sub-lable::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%) scaleX(0); /* center align, animate left to right */
+  transform-origin: left;
+  width: 100%;
+  height: 3px;
+  background-color: rgb(255, 153, 0);
+  transition: transform 0.3s ease;
+}
+
+.sub-lable:hover::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+.best-seller {
+  max-width: 90%;
+}
+
+@media screen and (max-width: 639px) {
+  .best-seller {
+    max-width: 100%;
+  }
+  
+}
+
+.criteria-option {
+  cursor: pointer;
+  white-space: nowrap;
+  padding-bottom: 0.25rem; /* pb-1 */
+  text-align: center;
+  border-bottom: none;
+  transition: border-bottom 0.1s ease;
+}
+
+.criteria-option.hover-effect:hover {
+  border-bottom: 3px solid rgb(255, 153, 0);
+}
+
+.criteria-option.selected {
+  border-bottom: none;
+  color: rgb(255, 153, 0);
+}
+
+.criteria-option.selected:hover {
+  border-bottom: none
+}
+
+.voucher {
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 639px) {
+  .voucher {
+    display: block; /* or remove display: flex; */
+  }
+}
+
+@media (max-width: 638px) {
+  .voucherInp {
+    margin-bottom: 0.5rem; /* or remove display: flex; */
+  }
+}
+
+/*End Here*/
+---------------
+
+.foot-container {
+  max-width: 85%;
+}
+
+@media (min-width: 1368px) {
+  .md-container {
+    max-width: 70%;
+  }
+}
+
+@media (min-width: 639px) {
+  .newarrh {
+    margin-top: 32px;
+  }
+}
+
+@media (max-width: 638px) {
+  .newarrh {
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 1279px) {
+  .card-container {
+    margin-top: 20px;
+    margin-left: 40px;
+    width: 80%;
+    height: 80%;
+  }
+}
+
+@media (max-width: 1368px) {
+  .headertext {
+    justify-content: center;
+    margin-top: 20px;
+  }
+}
+
+.hero-text {
+  font-family: 'DM Sans', sans-serif;
+  text-align: center;
+  color: #9a9a9a;
+}
+
+.display-4 {
+  font-size: 3.5rem;
+}
+
+.lead {
+  font-size: 1.25rem;
+}
+
+.bg-custom {
+  background-color: black;
+  padding: 5px 15px 5px 20px;
+  border-radius: 35px;
+  display: inline; /* or inline-block */
+}
+
+.hover-image {
+  transition: 1s;
+}
+
+.hover-col:hover .hover-image {
+  opacity: 0.8; /* Adjust the opacity value as desired */
+}
+
+.hover-col .hover-content {
+  display: none;
+}
+
+.hover-col:hover .hover-content {
+  z-index: 9999;
+  display: block;
+  position: absolute;
+  top: 10px;
+  left: 10px; 
+  padding: 10px;
+}
+
+.arr-img1 {
+  border-radius: 45px 0px 0px 45px;
+  transition: transform 0.6s ease-in-out, filter 0.6s ease-in-out;
+}
+
+.arr-img1:hover {
+  filter: brightness(0.8); /* Darkens the image */
+  transform: scale(1.1); /* Scales the image */
+}
+
+.arr-img {
+  transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+}
+
+.arr-img:hover {
+  filter: brightness(0.8); /* Darkens the image */
+  transform: scale(1.1); /* Scales the image */
+}
+
+.feat-card {
+  position: absolute;
+  text-align: center;
+  bottom: 6%;
+  left: 10%
+}
+
+.headerback {
+  background-color: #38332d;
+}
+
+.headerimg {
+  object-fit: center;
+}
+
+
+.headerdec {
+  font-weight: 500;
+  font-size: clamp(30px, 3vw, 56px);
+  text-align: left;
+}
+
+.size {
+  max-width: 80%;
+  max-height: 80%;
+}
+
+.content {
+  border-radius: 17px;
+}
+
+.animeY {
+  display: block;
+  transform: translateY(100px);
+  opacity: 0;
+}
+
+.animeY2 {
+  display: block;
+  transform: translateY(-70px);
+  opacity: 0;
+}
+
+.animeX {
+  display: block;
+  transform: translateX(-100px);
+  opacity: 0;
+}
+
+.animeX2 {
+  display: block;
+  transform: translateX(80px);
+  opacity: 0;
+}
+
+.cart-container {
+  position: relative;
+}
+
+.cart-container .overlay {
+  position: absolute;
+  border-radius: 25px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.cart-container:hover .overlay {
+  opacity: 1;
+}
+
+.overlay .close-icon {
+  color: white;
+  font-size: 24px;
+  margin: 10px;
+}
+
+/* Container for color options */
+.color-options {
+  display: flex; /* Display color boxes in a row */
+  flex-wrap: wrap; /* Wrap to the next line if there's not enough space */
+}
+
+.bubble {
+  position: absolute;
+  top: -10px;
+  margin-left: 28px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: red;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.mobile-shoping {
+  position: absolute;
+  top: 29px;
+  right: 80px;
+  width: 30px;
+  height: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  z-index: 10;
+}
+/* Individual color box */
+.color-box {
+  width: 20px; /* Width of the color box */
+  height: 20px; /* Height of the color box */
+  border-radius: 50%; /* Make the color box circular */
+  cursor: pointer; /* Pointer cursor on hover */
+  border: 2px solid #ddd; /* Optional border for visual clarity */
+  transition: border-color 0.3s ease; /* Smooth transition for border color */
+}
+
+/* Change border color on hover */
+.color-box:hover {
+  border-color: #333; /* Change border color on hover */
+}
+
+.swiper-pagination-bullet {
+  width: 12px;
+  height: 12px;
+  background-color: rgb(255, 153, 0, 0.4);
+  opacity: 1;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: rgb(255, 153, 0);
+}
+
+.custom-pagination-bullet {
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.custom-pagination-bullet:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}

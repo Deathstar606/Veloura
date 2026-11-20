@@ -1,171 +1,443 @@
-/* Start */
+/* ============================================================
+   PRODUCT CARDS & EDITORIAL PLACEHOLDERS
+   ============================================================ */
+.product-card-luxury {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.product-card-luxury:hover {
+  transform: translateY(-4px);
+}
+
 .curd {
   overflow: hidden;
   position: relative;
+  border-radius: 20px;
+  background-color: #f1ede6;
+  border: 1px solid rgba(20, 19, 18, 0.08);
+  box-shadow: 0 8px 26px rgba(15, 14, 12, 0.05);
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
 }
 
-/* Image container with aspect ratio or flexible height */
+.product-card-luxury:hover .curd {
+  box-shadow: 0 18px 42px rgba(15, 14, 12, 0.11);
+  border-color: rgba(221, 100, 16, 0.25);
+}
+
 .pro-img-container {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 5; /* You can adjust this to 1 / 1, 3 / 4, etc. */
+  aspect-ratio: 4 / 5;
   overflow: hidden;
   cursor: pointer;
   z-index: 1;
 }
 
-/* Both images */
-.pro-img {
+.pro-layer {
   position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover; /* or 'contain' if you want no cropping */
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Primary and secondary image layering */
-.pro-img.primary {
+.pro-layer.primary {
   z-index: 1;
   opacity: 1;
 }
 
-.pro-img.secondary {
+.pro-layer.secondary {
   z-index: 2;
   opacity: 0;
 }
 
-/* On hover: show secondary image and zoom */
-.pro-img-container:hover .primary {
+.pro-img-container:hover .pro-layer.primary {
   opacity: 0;
-  transform: scale(1.1);
+  transform: scale(1.04);
 }
 
-.pro-img-container:hover .secondary {
+.pro-img-container:hover .pro-layer.secondary {
   opacity: 1;
-  transform: scale(1.1);
+  transform: scale(1.04);
 }
 
 .pro-img-butt {
   position: absolute;
-  bottom: -50%; /* Off-screen initially */
+  bottom: 14px;
   left: 50%;
-  transform: translateX(-50%);
-  padding: 10px;
-  transition: bottom 0.3s ease;
-  visibility: hidden;
+  transform: translateX(-50%) translateY(14px);
+  opacity: 0;
+  z-index: 4;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
 }
 
 .curd:hover .pro-img-butt {
-  bottom: 10%;
-  visibility: visible;
-  z-index: 10000;
-}
-/* End */
-
-.dealcard {
-  overflow: hidden;
-  position: relative;
-}
-
-.dealcard:hover .curd-body{
-  top: 85%;
-}
-
-.cat-img-container {
-  position: relative;
-  overflow: hidden;
-}
-
-.cat-img-container:hover .heart-icon {
+  transform: translateX(-50%) translateY(0);
   opacity: 1;
+  pointer-events: auto;
 }
 
-.color-circle {
-  transition: border 0.1s ease-in-out;
-}
-
-.color-circle:hover {
-  border: 3px solid rgb(0, 0, 0); 
-}
-
-.heart-icon {
-  position: absolute;
-  top: 10px;
-  right: 15px;
+.curd:hover .product-placeholder-notice {
   opacity: 0;
-  transition: opacity 0.3s ease;
 }
 
-.curd-img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 10px;
-  }
-  
-.curd-body{
-    width: 100%;
-    height: 30%;
-    top: 100%;
-    position: absolute;
-    background: #1d280a;
-    border-radius: 10px;
-    backdrop-filter: blur(10px);
-    color: rgb(163, 156, 146);
-    padding: 0px 10px 40px 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    transition: 1s;
+.discount-glass-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 5;
+  padding: 0.32rem 0.72rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #141312;
 }
 
-.catcard {
+.discount-glass-badge span {
+  color: var(--accent);
+}
+
+.product-card-meta {
+  padding: 1rem 0.35rem 0.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex-grow: 1;
+}
+
+.product-card-title {
+  font-family: var(--font-display);
+  font-size: 1.24rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.22;
+  margin-bottom: 0.45rem;
+  max-width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
   overflow: hidden;
+  transition: color 0.25s ease;
+}
+
+.product-card-luxury:hover .product-card-title {
+  color: var(--accent);
+}
+
+.product-card-category-tag {
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+/* ============================================================
+   PRODUCT VISUAL & STUDIO UNAVAILABLE PLACEHOLDER
+   ============================================================ */
+.product-visual-frame {
   position: relative;
   width: 100%;
   height: 100%;
+  overflow: hidden;
+  background-color: #f1ede6;
 }
 
-.catimg {
-  max-width: 100%;
-  filter: brightness(0.8);
-  height: auto;
-  object-fit: contain;
-  transition: 0.3s ease;
-}
-
-.catimg:hover {
-  scale: 1.05;
-}
-
-.cat-body {
+.product-visual-img {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  padding: 15px 35px;
-  text-align: left;
-  border-radius: 0 5px 0 0;
-  transition: bottom 0.3s ease;
+  inset: 0;
   width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.45s ease;
 }
 
-.bc {
-  background-color: black;
+.product-placeholder-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(circle at 80% 15%, rgba(221, 100, 16, 0.1) 0%, transparent 55%),
+    linear-gradient(155deg, #f6f3ed 0%, #ebe5db 55%, #e5ded2 100%);
+  background-image:
+    radial-gradient(circle at 80% 15%, rgba(221, 100, 16, 0.1) 0%, transparent 55%),
+    linear-gradient(155deg, #f6f3ed 0%, #ebe5db 55%, #e5ded2 100%);
+  display: flex;
+  padding: 0.85rem;
 }
 
-.zoom-in {
-  animation: zoomIn 5.9s ease-in-out infinite;
+.product-placeholder-canvas::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(20, 19, 18, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(20, 19, 18, 0.035) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
 }
 
-@keyframes zoomIn {
-  0% {
-    transform: scale(1);
+.product-placeholder-aura {
+  position: absolute;
+  width: 60%;
+  height: 60%;
+  top: -12%;
+  right: -12%;
+  border-radius: 50%;
+  filter: blur(46px);
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.product-placeholder-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(20, 19, 18, 0.09);
+  border-radius: 14px;
+  padding: 0.85rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+}
+
+.product-placeholder-top {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(20, 19, 18, 0.55);
+}
+
+.product-placeholder-view {
+  color: var(--accent);
+}
+
+.product-placeholder-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  margin: auto 0;
+  padding: 0 0.4rem;
+}
+
+.product-placeholder-icon {
+  color: rgba(20, 19, 18, 0.58);
+}
+
+.product-placeholder-alt {
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 1.55vw, 1.25rem);
+  font-weight: 600;
+  line-height: 1.18;
+  color: #1c1a17;
+  max-width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-placeholder-notice {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.32rem 0.75rem;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #2f2c28;
+  max-width: 100%;
+  transition: opacity 0.25s ease;
+}
+
+.product-placeholder-brand {
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(20, 19, 18, 0.46);
+}
+
+.notice-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba(221, 100, 16, 0.2);
+}
+
+/* Compact Thumbnail Placeholder (Cart / Checkout / Detail thumbs) */
+.product-visual-frame.is-compact .product-placeholder-canvas {
+  padding: 0.35rem;
+}
+
+.product-visual-frame.is-compact .product-placeholder-inner {
+  padding: 0.4rem 0.3rem;
+  border-radius: 10px;
+}
+
+.product-visual-frame.is-compact .product-placeholder-center {
+  gap: 0.25rem;
+}
+
+.product-visual-frame.is-compact .product-placeholder-alt {
+  font-size: 0.75rem;
+  -webkit-line-clamp: 2;
+}
+
+.product-visual-frame.is-compact .product-placeholder-notice {
+  padding: 0.16rem 0.45rem;
+  font-size: 0.52rem;
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 639px) {
+  .product-placeholder-canvas {
+    padding: 0.55rem;
   }
-  100% {
-    transform: scale(1.2);
+  .product-placeholder-inner {
+    padding: 0.55rem 0.45rem;
+  }
+  .product-placeholder-top {
+    font-size: 0.5rem;
+  }
+  .product-placeholder-notice {
+    font-size: 0.55rem;
+    padding: 0.25rem 0.55rem;
   }
 }
 
+/* ============================================================
+   CATEGORY EDITORIAL 2-UP SHOWCASE (Reference Lookbook Grid)
+   ============================================================ */
+.collection-split-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  cursor: pointer;
+  background-color: #191817;
+  aspect-ratio: 1 / 1.04;
+  box-shadow: 0 12px 34px rgba(15, 14, 12, 0.08);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
 
-  
+.collection-split-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 48px rgba(15, 14, 12, 0.14);
+}
 
+.collection-split-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 15%;
+  transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1), filter 0.6s ease;
+}
+
+.collection-split-card:hover .collection-split-img {
+  transform: scale(1.04);
+  filter: brightness(0.92);
+}
+
+.collection-split-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(10, 10, 10, 0.72) 0%,
+    rgba(10, 10, 10, 0.22) 40%,
+    rgba(10, 10, 10, 0) 75%
+  );
+  pointer-events: none;
+}
+
+.collection-split-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: clamp(1.35rem, 3vw, 2.25rem);
+  z-index: 2;
+  color: #ffffff;
+}
+
+.collection-split-title {
+  font-family: var(--font-sans);
+  font-size: clamp(1.35rem, 2.3vw, 1.9rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.15;
+  color: #ffffff;
+  margin-bottom: 0.85rem;
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.collection-shop-btn {
+  padding: 0.65rem 1.7rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+}
+
+@media (max-width: 767px) {
+  .collection-split-card {
+    aspect-ratio: 4 / 4.4;
+  }
+}
+
+.subcat-editorial-tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #ffffff;
+  border: 1px solid rgba(20, 19, 18, 0.08);
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.subcat-editorial-tile:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(15, 14, 12, 0.1);
+  border-color: rgba(221, 100, 16, 0.32);
+  text-decoration: none;
+  color: inherit;
+}
+
+.subcat-editorial-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 15%;
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.subcat-editorial-tile:hover img {
+  transform: scale(1.07);
+}

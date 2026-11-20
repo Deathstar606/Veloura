@@ -1,172 +1,155 @@
-import React, { useState, useEffect } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
-import './Burger.css';
-import { NavItem } from 'reactstrap';
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
+import { Link, useLocation } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import { FaXmark, FaChevronDown } from "react-icons/fa6";
+import "./Burger.css";
 
 const BurgerMenu = () => {
   const location = useLocation();
-  const [isMen, setIsMen] = useState(false);
-  const [isWomen, setIsWomen] = useState(false);
-  const [iskids, setIskids] = useState(false);
-  const [isasc, setIsasc] = useState(false);
+  const [isMen, setIsMen] = useState(true);
+  const [expandedUpcoming, setExpandedUpcoming] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
-  
-  const toggleMen = () => {
-    setIsMen(!isMen);
-  };
 
-  const toggleWomen = () => {
-    setIsWomen(!isWomen);
-  };
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
 
-  const toggleKids = () => {
-    setIskids(!iskids);
-  };
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
 
-  const toggleAsc = () => {
-    setIsasc(!isasc);
-  };
+  const menuOverlay = (
+    <AnimatePresence>
+      {menuOpen && (
+        <motion.div
+          initial={{ opacity: 0, y: "-3%" }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: "-3%" }}
+          transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+          className="menu open"
+        >
+          <button
+            type="button"
+            onClick={toggleMenu}
+            aria-label="Close menu"
+            className="border-0 bg-transparent position-absolute"
+            style={{ top: "22px", right: "22px", color: "var(--text-primary)", cursor: "pointer" }}
+          >
+            <FaXmark size={26} />
+          </button>
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
+          <div className="w-100 px-4" style={{ maxWidth: "420px", maxHeight: "84vh", overflowY: "auto" }}>
+            <div className="text-center mb-4">
+              <span className="eyebrow-label justify-content-center">Atelier Directory</span>
+            </div>
 
-const [activeLink, setActiveLink] = useState('');
+            {/* Menswear Accordion */}
+            <div className="mb-3">
+              <button
+                type="button"
+                onClick={() => setIsMen((prev) => !prev)}
+                className="w-100 border-0 bg-transparent d-flex justify-content-between align-items-center py-2"
+                style={{ cursor: "pointer" }}
+              >
+                <span className="burg-menu">Menswear</span>
+                <FaChevronDown
+                  size={14}
+                  style={{
+                    transform: isMen ? "rotate(180deg)" : "rotate(0deg)",
+                    transition: "transform 0.25s ease",
+                  }}
+                />
+              </button>
 
-useEffect(() => {
-  setActiveLink(location.pathname);
-}, [location]);
+              <AnimatePresence>
+                {isMen && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    style={{ overflow: "hidden", paddingLeft: "0.75rem" }}
+                  >
+                    <div className="nav-sub-group mt-2">Shirts</div>
+                    <Link className="d-block py-1 text-dark text-decoration-none" to="/home/shirt" onClick={toggleMenu}>
+                      Half Sleeve
+                    </Link>
+                    <Link className="d-block py-1 text-dark text-decoration-none" to="/home/full shirt" onClick={toggleMenu}>
+                      Full Sleeve
+                    </Link>
+
+                    <div className="nav-sub-group mt-3">Polo</div>
+                    <Link className="d-block py-1 text-dark text-decoration-none" to="/home/polo" onClick={toggleMenu}>
+                      Polo Shirt
+                    </Link>
+
+                    <div className="nav-sub-group mt-3">Luxury Wear</div>
+                    <Link className="d-block py-1 text-dark text-decoration-none" to="/home/luxury shirt" onClick={toggleMenu}>
+                      Luxury Shirt
+                    </Link>
+                    <Link className="d-block py-1 text-dark text-decoration-none" to="/home/luxury polo" onClick={toggleMenu}>
+                      Luxury Polo
+                    </Link>
+
+                    <div className="nav-sub-group mt-3">Summer Collection</div>
+                    <Link className="d-block py-1 text-dark text-decoration-none" to="/home/summer polo" onClick={toggleMenu}>
+                      Summer Polo
+                    </Link>
+                    <Link className="d-block py-1 text-dark text-decoration-none" to="/home/summer shirt" onClick={toggleMenu}>
+                      Summer Shirt
+                    </Link>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {["Womenswear", "Kidswear", "Accessories"].map((section) => (
+              <div key={section} className="mb-2" style={{ borderTop: "1px solid var(--hairline)" }}>
+                <button
+                  type="button"
+                  onClick={() => setExpandedUpcoming(expandedUpcoming === section ? null : section)}
+                  className="w-100 border-0 bg-transparent d-flex justify-content-between align-items-center py-2"
+                  style={{ cursor: "pointer" }}
+                >
+                  <span className="burg-menu">{section}</span>
+                  <span className="eyebrow-label" style={{ fontSize: "0.62rem" }}>
+                    Soon
+                  </span>
+                </button>
+                {expandedUpcoming === section && (
+                  <p className="small text-muted mb-2">Atelier launch coming soon.</p>
+                )}
+              </div>
+            ))}
+
+            <div className="pt-2" style={{ borderTop: "1px solid var(--hairline)" }}>
+              <Link
+                to="/home/aboutus"
+                onClick={toggleMenu}
+                className="d-block py-2 text-decoration-none"
+              >
+                <span className="burg-menu">About Us</span>
+              </Link>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 
   return (
-    <div style={{overflowY: "auto"}}>
-      <div className="burger-menu">
-        <div className="burger-icon" onClick={toggleMenu}>
-          <div className={`bar ${menuOpen ? 'open' : ''}`}></div>
-          <div className={`bar ${menuOpen ? 'open' : ''}`} style={{width: "50%"}}></div>
+    <>
+      <button
+        type="button"
+        className="burger-trigger"
+        onClick={toggleMenu}
+        aria-label="Toggle navigation menu"
+      >
+        <div className="burger-icon">
+          <div className={`bar ${menuOpen ? "open" : ""}`} />
+          <div className={`bar ${menuOpen ? "open" : ""}`} style={{ width: "65%" }} />
         </div>
-      </div>
-
-      <div className={`menu ${menuOpen ? 'open' : ''}`}>
-        <ul>
-          <div className='d-flex justify-content-center'>
-            <li>
-              <NavItem
-                onClick={toggleMen}
-              >
-                <div className={`burg-menu pr-2 pl-2 text-center ${activeLink === '/menu' ? 'active' : ''}`}>
-                  Menswear
-                </div>
-                <AnimatePresence>
-                  {isMen && (
-                    <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3 }}
-                    style={{ paddingTop: "10px" }} // Added styles
-                    >
-                      <h4 style={{ color: "rgb(255, 153, 0)" }} className='text-center'>T Shirt</h4>
-                        <Link to="/home/shirt" style={{textDecoration: "none", color: "inherit"}} onClick={toggleMenu}>
-                          <h5 className='text-center'>Half Sleve</h5>
-                        </Link>
-                        <Link to="/home/full shirt" style={{textDecoration: "none", color: "inherit"}} onClick={toggleMenu}>
-                          <h5 className='text-center'>Full Sleve</h5>
-                        </Link>
-                      <h4 style={{ color: "rgb(255, 153, 0)" }} className='text-center'>Polo</h4>
-                        <Link to="/home/polo" style={{textDecoration: "none", color: "inherit"}} onClick={toggleMenu}>
-                          <h5 className='text-center'>Polo Shirt</h5>
-                        </Link>
-                      <h4 style={{ color: "rgb(255, 153, 0)" }} className='text-center'>Luxury Wear</h4>
-                        <Link to="/home/luxury shirt" style={{textDecoration: "none", color: "inherit"}} onClick={toggleMenu}>
-                          <h5 className='text-center'>Luxury Shirt</h5>
-                        </Link>
-                        <Link to="/home/luxury polo" style={{textDecoration: "none", color: "inherit"}} onClick={toggleMenu}>
-                          <h5 className='text-center'>Luxury Polo</h5>
-                        </Link>
-                      <h4 style={{ color: "rgb(255, 153, 0)" }} className='text-center'>Summer Collection</h4>
-                        <Link to="/home/summer polo" style={{textDecoration: "none", color: "inherit"}} onClick={toggleMenu}>
-                          <h5 className='text-center'>Summer Polo</h5>
-                        </Link>
-                        <Link to="/home/summer shirt" style={{textDecoration: "none", color: "inherit"}} onClick={toggleMenu}>
-                          <h5 className='text-center'>Summer Shirt</h5>
-                        </Link>
-                    </motion.div>
-                  )}
-                </AnimatePresence>             
-              </NavItem>
-              <NavItem
-                onClick={toggleWomen}
-              >
-                <div className={`burg-menu pr-2 pl-2 text-center ${activeLink === '/menu' ? 'active' : ''}`}>
-                  Womenswear
-                </div>
-                <AnimatePresence>
-                  {isWomen && (
-                    <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3 }}
-                    style={{ paddingTop: "10px" }} // Added styles
-                    >
-                      <h5 className='text-center'>Coming Soon</h5>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </NavItem>
-              <NavItem
-                onClick={toggleKids}
-              >
-                <div className={`burg-menu pr-2 pl-2 text-center ${activeLink === '/menu' ? 'active' : ''}`}>
-                  Kidswear
-                </div>
-                <AnimatePresence>
-                  {iskids && (
-                    <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3 }}
-                    style={{ paddingTop: "10px" }} // Added styles
-                    >
-                      <h5 className='text-center'>Coming Soon</h5>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </NavItem>
-              <NavItem
-                onClick={toggleAsc}
-              >
-                <div className={`burg-menu pr-2 pl-2 text-center ${activeLink === '/menu' ? 'active' : ''}`}>
-                  Accessories
-                </div>
-                <AnimatePresence>
-                  {isasc && (
-                    <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3 }}
-                    style={{ paddingTop: "10px" }} // Added styles
-                    >
-                      <h5 className='text-center'>Coming Soon</h5>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </NavItem>
-              <NavItem>
-                <Link to="/home/aboutus" onClick={toggleMenu}> 
-                  <div className={`burg-menu pr-2 pl-2 text-center ${activeLink === '/menu' ? 'active' : ''}`}>
-                    About Us
-                  </div>
-                </Link>
-              </NavItem>
-            </li>
-          </div>
-        </ul>
-      </div>
-    </div>
+      </button>
+      {typeof document !== "undefined" ? createPortal(menuOverlay, document.body) : null}
+    </>
   );
 };
 

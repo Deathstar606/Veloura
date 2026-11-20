@@ -1,289 +1,246 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Container, Row, Col, Form, FormGroup, Label } from 'reactstrap';
-import { Product } from './Card';
-import { Breadcrumb } from './BreadCrumb';
-import { BsX  } from "react-icons/bs";
-import 'swiper/css';
-import 'swiper/css/effect-fade';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import "./filterPanel.css"
-import MediaQuery from 'react-responsive';
-import { AnimatePresence, motion, useInView } from 'framer-motion';
-import { Range } from 'react-range';
+import React, { useState, useEffect, useMemo } from "react";
+import { useLocation, Link } from "react-router-dom";
+import { Container, Row, Col, Form, FormGroup, Label } from "reactstrap";
+import { Product } from "./Card";
+import { Breadcrumb } from "./BreadCrumb";
+import { BsX, BsSliders } from "react-icons/bs";
+import "./filterPanel.css";
+import { AnimatePresence, motion } from "framer-motion";
+import { Range } from "react-range";
 
-const ProductList = (props) => {
-    const [criteria, setCriteria] = useState("");
-    const ChangeCriteria = (e) => {
-        setCriteria(e);
-    }
+const SORT_OPTIONS = ["Awareness", "Popularity", "High to Low", "Low to High"];
 
-    const [isFilterOpen, setIsFilterOpen] = useState(false);
+const ProductList = ({ category, products = [] }) => {
+  const [criteria, setCriteria] = useState("");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [priceRange, setPriceRange] = useState([0, 4000]);
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-      }, []);
+  const location = useLocation();
+  const endpoint = useMemo(() => {
+    const segments = location.pathname.split("/").filter(Boolean);
+    return decodeURIComponent(segments[segments.length - 1] || category || "");
+  }, [location.pathname, category]);
 
-    const toggleFilter = () => {
-        setIsFilterOpen(!isFilterOpen);
-    }
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
-    const location = useLocation();
-    const [endpoint, setEndpoint] = useState('');
+  const filteredClothes = useMemo(() => {
+    return (products || [])
+      .filter((cloth) => cloth.price >= priceRange[0] && cloth.price <= priceRange[1])
+      .sort((a, b) => {
+        if (criteria === "Low to High") return a.price - b.price;
+        if (criteria === "High to Low") return b.price - a.price;
+        if (criteria === "Awareness") return new Date(b.createdAt) - new Date(a.createdAt);
+        if (criteria === "Popularity") return (b.ordered || 0) - (a.ordered || 0);
+        return 0;
+      });
+  }, [products, priceRange, criteria]);
 
-    useEffect(() => {
-        const pathSegments = location.pathname.split('/').filter(Boolean);
-        const lastSegment = decodeURIComponent(pathSegments[pathSegments.length - 1]);
-        setEndpoint(lastSegment);
-    }, [location]);
+  const renderFilterControls = () => (
+    <Form>
+      <FormGroup>
+        <Label className="pb-2 small text-uppercase" style={{ letterSpacing: "0.14em" }}>
+          Price Range (TK)
+        </Label>
+        <div className="price-range px-2">
+          <Range
+            values={priceRange}
+            step={50}
+            min={0}
+            max={4000}
+            onChange={setPriceRange}
+            renderTrack={({ props, children }) => (
+              <div
+                {...props}
+                className="track"
+                style={{ ...props.style, display: "flex", alignItems: "center" }}
+              >
+                {children}
+              </div>
+            )}
+            renderThumb={({ props }) => (
+              <div
+                {...props}
+                style={{
+                  ...props.style,
+                  backgroundColor: "#ffffff",
+                  border: "2px solid var(--accent)",
+                  borderRadius: "50%",
+                  width: "18px",
+                  height: "18px",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
+                }}
+              />
+            )}
+          />
+          <div className="price-values tabular-price mt-2">
+            <span>{priceRange[0]} TK</span>
+            <span>{priceRange[1]} TK</span>
+          </div>
+        </div>
+      </FormGroup>
 
-    const ref = useRef(null)
-    const isInview = useInView(ref)
+      <div className="pt-3">
+        <div className="small text-uppercase font-weight-bold mb-2" style={{ letterSpacing: "0.14em" }}>
+          Sort By
+        </div>
+        <div className="d-flex flex-wrap" style={{ gap: "0.5rem" }}>
+          {SORT_OPTIONS.map((item) => (
+            <button
+              type="button"
+              key={item}
+              className={`criteria-option bg-transparent ${criteria === item ? "selected" : ""}`}
+              onClick={() => setCriteria(criteria === item ? "" : item)}
+            >
+              {item}
+            </button>
+          ))}
+        </div>
+      </div>
+    </Form>
+  );
 
-    const [selectedPriceRance, setPriceRance] = useState({
-        priceRange: [0, 4000],  // Default range
-    });
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+      style={{ minHeight: "75vh", paddingBottom: "4rem" }}
+    >
+      <Container style={{ maxWidth: "1380px" }} className="pt-3">
+        <div className="d-flex justify-content-between align-items-center flex-wrap mb-3">
+          <Breadcrumb
+            items={[
+              { link: "/home", active: false },
+              {
+                name: (
+                  <strong style={{ color: "var(--accent)", textTransform: "capitalize" }}>
+                    {endpoint}
+                  </strong>
+                ),
+                link: "",
+                active: true,
+              },
+            ]}
+          />
 
-    const handlePriceChange = (values) => {
-        setPriceRance(prevState => ({
-            ...prevState,
-            priceRange: values
-        }));
-    };
+          <button
+            type="button"
+            className="butt d-md-none"
+            style={{ padding: "0.45rem 1rem", fontSize: "0.72rem" }}
+            onClick={() => setIsFilterOpen(true)}
+          >
+            <BsSliders className="mr-1" /> Filters
+          </button>
+        </div>
 
-    if (props.products) {
-        const filteredClothes = props.products
-        .filter(cloth => {
-          return (
-            cloth.price >= selectedPriceRance.priceRange[0] &&
-            cloth.price <= selectedPriceRance.priceRange[1]
-          );
-        })
-        .sort((a, b) => {
-          if (criteria === "Low to High") {
-            return a.price - b.price;
-          } else if (criteria === "High to Low") {
-            return b.price - a.price;
-          } else if (criteria === "Awareness") {
-            return new Date(b.createdAt) - new Date(a.createdAt);
-          } else if (criteria === "Popularity") {
-            return b.ordered - a.ordered; // More ordered items first
-          }
-          return 0;
-        });
-      
-        const catdes = filteredClothes.map((cloth) => (
-            <Col md={4} xs={6} className='mb-5' key={cloth._id}>
-                <Product category={props.category} child={cloth} />
-            </Col>
-        ));
+        <div className="mb-4 pb-3" style={{ borderBottom: "1px solid var(--hairline)" }}>
+          <span className="eyebrow-label mb-1">Veloura Menswear</span>
+          <div className="d-flex justify-content-between align-items-baseline flex-wrap">
+            <h1 className="section-heading" style={{ textTransform: "capitalize" }}>
+              {endpoint}
+            </h1>
+            <span className="small text-muted tabular-price">
+              {filteredClothes.length} {filteredClothes.length === 1 ? "Piece" : "Pieces"}
+            </span>
+          </div>
+        </div>
 
-        return (
+        <Row>
+          {/* Desktop Sidebar */}
+          <Col md={3} className="d-none d-md-block">
+            <div
+              className="liquid-glass p-4"
+              style={{ borderRadius: "22px", position: "sticky", top: "92px" }}
+            >
+              <h5
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "1.45rem",
+                  fontWeight: 600,
+                  marginBottom: "1rem",
+                }}
+              >
+                Refine Selection
+              </h5>
+              {renderFilterControls()}
+            </div>
+          </Col>
+
+          {/* Product Grid */}
+          <Col md={9} xs={12}>
+            {filteredClothes.length > 0 ? (
+              <Row className="g-3 g-md-4">
+                {filteredClothes.map((cloth) => (
+                  <Col lg={4} md={6} xs={6} className="mb-4" key={cloth._id}>
+                    <Product category={category} child={cloth} />
+                  </Col>
+                ))}
+              </Row>
+            ) : (
+              <div
+                className="liquid-glass text-center p-5 my-3"
+                style={{ borderRadius: "24px" }}
+              >
+                <span className="eyebrow-label justify-content-center mb-2">Capsule Update</span>
+                <h3 style={{ fontFamily: "var(--font-display)", fontSize: "2rem" }}>
+                  Curating New Pieces
+                </h3>
+                <p className="text-muted mx-auto mb-4" style={{ maxWidth: "420px" }}>
+                  No garments match your current filter or this capsule is currently being restocked.
+                </p>
+                <Link to="/home" className="butt">
+                  Explore Collections
+                </Link>
+              </div>
+            )}
+          </Col>
+        </Row>
+      </Container>
+
+      {/* Mobile Liquid-Glass Filter Drawer */}
+      <AnimatePresence>
+        {isFilterOpen && (
+          <motion.div
+            className="modal-back d-md-none"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsFilterOpen(false)}
+          >
             <motion.div
-                transition={{ duration: 0.5, type: "tween", ease: "easeIn" }}
-                initial={{ x: 1000, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: -1000, opacity: 0 }}>
-                <Container style={{ maxWidth: "97%" }}>
-                    <div className="row" ref={ref}>
-                        <Breadcrumb items={[
-                            { link: '/home', active: false },
-                            { name: <span><strong style={{color: "rgb(255, 153, 0)"}}>{endpoint}</strong></span>, link: '', active: true }
-                        ]} />
-                        <MediaQuery maxWidth={639}>
-                            <motion.button
-                                className='butt mt-1'
-                                style={isInview ? 
-                                    { marginBottom: "10px", right: 10, zIndex: 100, position: "absolute" } : 
-                                    { position: "fixed", top: 10, right: 10, zIndex: 100, border: "1px solid black", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)" }}
-                                onClick={toggleFilter}
-                            >
-                                Filters
-                            </motion.button>
-                        </MediaQuery>
-                    </div>
-                    <Row>
-                    <MediaQuery minWidth={639}>
-                        <Col md={2} className="sidebar">
-                            <div className="sidebar-content">
-                                <h5 className='text-center'>Filter</h5>
-                                <Form>
-                                    <FormGroup>
-                                        <Label className='pb-2' for="priceRange">Range</Label>
-                                        <div className="price-range pr-3">
-                                            <Range
-                                                values={selectedPriceRance.priceRange}
-                                                step={1}
-                                                min={0}
-                                                max={4000}
-                                                onChange={handlePriceChange}
-                                                renderTrack={({ props, children }) => (
-                                                    <div
-                                                        {...props}
-                                                        className="track"
-                                                    >
-                                                        {children}
-                                                    </div>
-                                                )}
-                                                renderThumb={({ props }) => (
-                                                    <div
-                                                        {...props}
-                                                        style={{backgroundColor: "transparent", border: "2px solid rgb(255, 153, 0)", borderRadius: "50%", width: "20px", height: "20px"}}
-                                                        className="thumb"
-                                                    />
-                                                )}
-                                            />
-                                            <div className="price-values">
-                                                <span>Min: {selectedPriceRance.priceRange[0]}</span>
-                                                <span>Max: {selectedPriceRance.priceRange[1]}</span>
-                                            </div>
-                                        </div>
-                                    </FormGroup>
-                                    <Row className='pt-3'>
-                                        {["Awareness", "Popularity", "High to Low", "Low to High"].map((item, index) => (
-                                            <Col md={6} key={index}>
-                                                <h6
-                                                    className={`criteria-option mt-2 pb-1 ${
-                                                        criteria === item ? "selected" : "hover-effect"
-                                                    }`}
-                                                    onClick={() => ChangeCriteria(item)}
-                                                >
-                                                    {item}
-                                                </h6>
-                                            </Col>
-                                        ))}
-                                    </Row>           
-                                </Form>
-                            </div>
-                        </Col>
-                    </MediaQuery>
-                    {isFilterOpen && (
-                        <AnimatePresence mode='wait'>
-                            <motion.div
-                                initial={{ y: '100%' }}
-                                animate={{ y: 0 }}
-                                exit={{ y: '100%' }}
-                                transition={{ duration: 0.5, type: 'tween', ease: 'easeInOut' }}
-                                style={{
-                                    position: 'fixed',
-                                    bottom: 0,
-                                    left: 0,
-                                    width: '100%',
-                                    height: '50%',
-                                    backgroundColor: 'rgba(255, 255, 255)',
-                                    zIndex: 1000,
-                                    boxShadow: '0px -2px 10px rgba(0, 0, 0, 0.3)',
-                                    padding: '20px',
-                                    overflowY: "auto"
-                                }}>
-                                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                                    <BsX size={30} onClick={toggleFilter} style={{ cursor: 'pointer' }} />
-                                </div>
-                                <div>
-                                    <h4 className='text-center'>Filter</h4>
-                                    <Form>
-                                        <FormGroup>
-                                            <Label className='pb-2' for="priceRange">Price Range</Label>
-                                            <div className="price-range pr-3">
-                                                <Range
-                                                    values={selectedPriceRance.priceRange}
-                                                    step={1}
-                                                    min={0}
-                                                    max={4000}
-                                                    onChange={handlePriceChange}
-                                                    renderTrack={({ props, children }) => (
-                                                        <div
-                                                            {...props}
-                                                            className="track"
-                                                        >
-                                                            {children}
-                                                        </div>
-                                                    )}
-                                                    renderThumb={({ props }) => (
-                                                        <div
-                                                            {...props}
-                                                            style={{backgroundColor: "transparent", border: "2px solid rgb(255, 153, 0)", borderRadius: "50%", width: "20px", height: "20px"}}
-                                                            className="thumb"
-                                                        />
-                                                    )}
-                                                />
-                                                <div className="price-values">
-                                                    <span>Min: {selectedPriceRance.priceRange[0]}</span>
-                                                    <span>Max: {selectedPriceRance.priceRange[1]}</span>
-                                                </div>
-                                            </div>
-                                        </FormGroup>
-                                    </Form>
-                                    <Row>
-                                        <Col xs={6}>
-                                            <h6
-                                                className="mt-2 pb-1 text-center"
-                                                style={{
-                                                whiteSpace: "nowrap",
-                                                cursor: "pointer",
-                                                color: criteria === "Awareness" ? "rgb(255, 153, 0)" : "black"
-                                                }}
-                                                onClick={() => ChangeCriteria("Awareness")}
-                                            >
-                                                Awareness
-                                            </h6>                                        
-                                        </Col>
-                                        <Col xs={6}>
-                                            <h6
-                                                className="mt-2 pb-1 text-center"
-                                                style={{
-                                                whiteSpace: "nowrap",
-                                                cursor: "pointer",
-                                                color: criteria === "Popularity" ? "rgb(255, 153, 0)" : "black"
-                                                }}
-                                                onClick={() => ChangeCriteria("Popularity")}
-                                            >
-                                                Popularity
-                                            </h6>                                        
-                                        </Col>
-                                        <Col xs={6}>
-                                            <h6
-                                                className="mt-2 pb-1 text-center"
-                                                style={{
-                                                whiteSpace: "nowrap",
-                                                cursor: "pointer",
-                                                color: criteria === "High to Low" ? "rgb(255, 153, 0)" : "black"
-                                                }}
-                                                onClick={() => ChangeCriteria("High to Low")}
-                                            >
-                                                High to Low
-                                            </h6>
-                                        </Col>
-
-                                        <Col xs={6}>
-                                            <h6
-                                                className="mt-2 pb-1 text-center"
-                                                style={{
-                                                whiteSpace: "nowrap",
-                                                cursor: "pointer",
-                                                color: criteria === "Low to High" ? "rgb(255, 153, 0)" : "black"
-                                                }}
-                                                onClick={() => ChangeCriteria("Low to High")}
-                                            >
-                                                Low to High
-                                            </h6>
-                                        </Col>
-                                    </Row>
-                                </div>
-                            </motion.div>
-                        </AnimatePresence>
-                    )}   
-                        <Col md={10} style={{minHeight: "50vh"}}>
-                            <Row className='mt-3'>
-                                {catdes}
-                            </Row>
-                        </Col>
-                    </Row>
-                </Container>
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              onClick={(e) => e.stopPropagation()}
+              className="liquid-glass p-4"
+              style={{
+                position: "fixed",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                maxHeight: "65vh",
+                borderRadius: "26px 26px 0 0",
+                background: "rgba(250, 249, 247, 0.96)",
+                overflowY: "auto",
+              }}
+            >
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h4 style={{ fontFamily: "var(--font-display)", fontSize: "1.55rem", margin: 0 }}>
+                  Filter &amp; Sort
+                </h4>
+                <BsX size={28} onClick={() => setIsFilterOpen(false)} style={{ cursor: "pointer" }} />
+              </div>
+              {renderFilterControls()}
             </motion.div>
-        );
-    }
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
 };
 
 export default ProductList;

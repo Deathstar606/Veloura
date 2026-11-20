@@ -1,50 +1,38 @@
-/* Container for the breadcrumbs */
 .custom-breadcrumb {
-    padding: 10px; /* Padding around the breadcrumb items */
-    border-radius: 5px; /* Rounded corners */
-    display: flex; /* Flexbox layout for horizontal alignment */
-    align-items: center; /* Vertical alignment */
+  padding: 0.5rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 500;
 }
 
-@media screen and (max-width: 639px) {
+.custom-breadcrumb-item {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-muted);
+}
+
+.custom-breadcrumb-item a {
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.custom-breadcrumb-item a:hover {
+  color: var(--accent);
+}
+
+.custom-breadcrumb-item + .custom-breadcrumb-item::before {
+  content: "/";
+  margin: 0 0.45rem;
+  color: rgba(20, 19, 18, 0.32);
+}
+
 .breadcrumb-active-name {
-  display: inline-block;
-  max-width: 120px; /* Adjust as needed */
+  max-width: 180px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  vertical-align: bottom;
-}
-}
-
-@media screen and (min-width: 640px) {
-    .custom-breadcrumb {
-        display: block; /* Stack items vertically on small screens */
-    }
-}
-
-/* Individual breadcrumb items */
-.custom-breadcrumb-item {
-    margin-top: 5px; /* Space between breadcrumb items */
-    color: rgb(0, 0, 0) /* Text color */
-}
-
-@media screen and (max-width: 640px) {
-    .custom-breadcrumb-item {
-        margin-top: 0;
-        margin-right: 5px; 
-    }
-    
-}
-
-/* Links inside breadcrumb items */
-.custom-breadcrumb-item a {
-    color: #000; /* Link color */
-    text-decoration: none; /* Remove underline from links */
-}
-
-/* Separator between breadcrumb items */
-.custom-breadcrumb-item + .custom-breadcrumb-item::before {
-    margin-right: 10px; /* Space after the separator */
-    color: #000; /* Separator color */
 }

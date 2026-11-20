@@ -1,113 +1,133 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, memo } from "react";
 import { Link } from "react-router-dom";
-import "swiper/css";
-import "swiper/css/navigation";
-import MediaQuery from "react-responsive";
+import { FaArrowRight } from "react-icons/fa6";
+import ProductVisual from "./ProductVisual";
 import "./card.css";
 
-export const Product = ({ category, child }) => {
-    const [defCol, setDefCol] = useState(child.color[0]);
-    const dem1 = child.images[defCol][0];
-    const dem2 = child.images[defCol][1];
-    const [imgSrc, setImgSrc] = useState("");
+export const Product = memo(({ category, child }) => {
+  const colorList = Array.isArray(child.color) && child.color.length > 0 ? child.color : ["Default"];
+  const [defCol, setDefCol] = useState(colorList[0]);
 
-    useEffect(() => {
-        setImgSrc(dem1);
-    }, [defCol]);
+  const colorImages = child.images?.[defCol] || Object.values(child.images || {})[0] || [];
+  const dem1 = colorImages[0] || "";
+  const dem2 = colorImages[1] || dem1;
 
-    const changeCol = (col) => {
-        setDefCol(col);
-    };
+  const hasDiscount = Boolean(child.discount && Number(child.discount) > 0);
+  const discountedPrice = hasDiscount
+    ? Math.round(child.price - child.price * (child.discount / 100))
+    : null;
 
-    const discountedPrice = child.discount ? 
-        (child.price - (child.price * (child.discount / 100))).toFixed(2) : 
-        null;
+  return (
+    <article className="product-card-luxury">
+      <div className="curd">
+        {hasDiscount && (
+          <span className="badge discount-glass-badge liquid-glass-pill">
+            <span>{child.discount}%</span> OFF
+          </span>
+        )}
 
-    return (
-        <div className="d-flex flex-column h-100">
-            {/* Image section stays in curd */}
-            <div className="curd">
-                {child.discount && (
-                    <span 
-                        className="badge bg-danger position-absolute" 
-                        style={{ top: '15px', right: '22px', zIndex: 2, scale: "1.2" }}
-                    >
-                        {child.discount}% OFF
-                    </span>
-                )}
-                <Link to={`/home/${category}/${child._id}`}>
-                    <div className="pro-img-container">
-                        <div>
-                            <img className="pro-img primary" src={dem1} alt={child.name} />
-                            <img className="pro-img secondary" src={dem2} alt={child.name} />
-                        </div>
-                        <MediaQuery minWidth={640}>
-                            <div className="pro-img-butt">
-                                <div style={{ display: "inline-block" }} className="butt">Details</div>
-                            </div>
-                        </MediaQuery>
-                    </div>            
-                </Link>
+        <Link to={`/home/${encodeURIComponent(category)}/${child._id}`} aria-label={`View ${child.name}`}>
+          <div className="pro-img-container">
+            <div className="pro-layer primary">
+              <ProductVisual
+                src={dem1}
+                alt={child.name}
+                colorHint={defCol}
+                subLabel="Front Look"
+              />
+            </div>
+            <div className="pro-layer secondary">
+              <ProductVisual
+                src={dem2}
+                alt={child.name}
+                colorHint={defCol}
+                subLabel="Detail View"
+              />
             </div>
 
-            {/* Content + mobile button section */}
-            <div className="p-2 pt-2 d-flex flex-column text-center flex-grow-1">
-                <div>
-                    <h5
-                        className="mb-3 mt-2"
-                        style={{
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis'
-                        }}
-                    >
-                        {child.name}
-                    </h5>
-
-                    <div className="color-options d-flex justify-content-center mb-2">
-                        {child.color.map((col, index) => (
-                            <div
-                                key={index}
-                                className="color-box"
-                                style={{
-                                    backgroundColor: col,
-                                    width: '23px',
-                                    height: '23px',
-                                    marginRight: '12px',
-                                    marginBottom: "5px",
-                                    borderRadius: '50%',
-                                    cursor: 'pointer'
-                                }}
-                                onClick={() => changeCol(col)}
-                            />
-                        ))}
-                    </div>
-
-                    <div className="d-flex justify-content-center align-items-center">
-                        {child.discount ? (
-                            <>
-                                <span className="text-muted me-2 mr-2" style={{ textDecoration: 'line-through', whiteSpace: 'nowrap' }}>
-                                    {child.price} TK
-                                </span>
-                                <span className="text-danger fw-bold" style={{ whiteSpace: 'nowrap' }}>
-                                    {discountedPrice} TK
-                                </span>
-                            </>
-                        ) : (
-                            <div>
-                                <span className="fw-bold">{child.price} TK</span>
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                {/* Mobile-only button at bottom */}
-                <MediaQuery maxWidth={639}>
-                    <Link to={`/home/${category}/${child._id}`} className="mt-auto">
-                        <div style={{ display: "inline-block" }} className="butt mt-3">Details</div>
-                    </Link>
-                </MediaQuery>
+            <div className="pro-img-butt d-none d-sm-block">
+              <span className="butt-glass" style={{ padding: "0.55rem 1.35rem", fontSize: "0.7rem" }}>
+                Quick View <FaArrowRight size={10} />
+              </span>
             </div>
+          </div>
+        </Link>
+      </div>
+
+      <div className="product-card-meta">
+        <span className="product-card-category-tag">{category}</span>
+        <Link
+          to={`/home/${encodeURIComponent(category)}/${child._id}`}
+          style={{ textDecoration: "none", color: "inherit", maxWidth: "100%" }}
+        >
+          <h3 className="product-card-title">{child.name}</h3>
+        </Link>
+
+        {/* Color Swatches */}
+        <div className="color-options d-flex justify-content-center align-items-center gap-2 mb-2">
+          {colorList.map((col, index) => {
+            const isSelected = defCol === col;
+            return (
+              <button
+                key={`${col}-${index}`}
+                type="button"
+                aria-label={`Select color ${col.trim()}`}
+                className={`color-box ${isSelected ? "active-swatch" : ""}`}
+                style={{
+                  backgroundColor: col.trim(),
+                  marginRight: index < colorList.length - 1 ? "8px" : "0",
+                }}
+                onClick={() => setDefCol(col)}
+              />
+            );
+          })}
         </div>
-    );
-};
+
+        {/* Price */}
+        <div className="d-flex justify-content-center align-items-baseline gap-2 tabular-price">
+          {hasDiscount ? (
+            <>
+              <span
+                className="text-muted mr-2"
+                style={{ textDecoration: "line-through", fontSize: "0.86rem" }}
+              >
+                {Number(child.price).toLocaleString()} TK
+              </span>
+              <span
+                style={{
+                  color: "var(--accent)",
+                  fontWeight: 700,
+                  fontSize: "1.02rem",
+                }}
+              >
+                {Number(discountedPrice).toLocaleString()} TK
+              </span>
+            </>
+          ) : (
+            <span style={{ fontWeight: 600, fontSize: "1rem", color: "var(--text-primary)" }}>
+              {Number(child.price).toLocaleString()} TK
+            </span>
+          )}
+        </div>
+
+        {/* Mobile Quick Link */}
+        <Link
+          to={`/home/${encodeURIComponent(category)}/${child._id}`}
+          className="d-inline-flex d-sm-none align-items-center mt-2"
+          style={{
+            fontSize: "0.72rem",
+            fontWeight: 600,
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            color: "var(--text-primary)",
+            textDecoration: "none",
+            borderBottom: "1px solid var(--accent)",
+            paddingBottom: "2px",
+          }}
+        >
+          View Piece
+        </Link>
+      </div>
+    </article>
+  );
+});

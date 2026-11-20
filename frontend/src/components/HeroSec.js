@@ -1,229 +1,164 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
-import MediaQuery from "react-responsive";
-//import demo from "../images/demo.mp4"
+import { motion, AnimatePresence } from "framer-motion";
+import { FaArrowDown } from "react-icons/fa6";
+import demo from "../images/demo.mp4";
+
+const CYCLING_WORDS = ["Style", "Class", "Desire"];
+const STORY_WORDS = ["Wear", "Your", "Story..."];
 
 const TextCycle = ({ texts }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const textVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
-      },
-    },
-    exit: {
-      opacity: 0,
-      y: 50,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.1,
-      },
-    },
-  };
-
-  const letterVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-      opacity: 1,
-      y: 0,
-    },
-    exit: { opacity: 0, y: 50 },
-  };
-
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % texts.length);
-    }, 4000); // 4 seconds per text animation cycle
+      setCurrentIndex((prev) => (prev + 1) % texts.length);
+    }, 3000);
     return () => clearInterval(interval);
   }, [texts.length]);
 
   return (
-    <motion.div
-      variants={textVariants}
-      initial="hidden"
-      animate="visible"
-      exit="exit"
-      key={texts[currentIndex]} // Key ensures re-render for each text change
-      style={{
-        marginRight: "auto",
-        color: "#DD6410",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center", // Aligns text vertically in the parent container
-        textAlign: "center", // Ensures text is centered
-        flexWrap: "wrap", // Handles long text wrapping gracefully
-      }}
-    >
-      {texts[currentIndex].split(" ").map((word, wordIndex) => (
-        <span
-          key={wordIndex}
-          style={{
-            display: "inline-block",
-            marginRight: "0.5em",
+    <span className="hero-cycle-wrap" style={{ display: "inline-grid", placeItems: "center start" }}>
+      <AnimatePresence initial={false}>
+        <motion.span
+          key={texts[currentIndex]}
+          initial={{ opacity: 0, y: 14 }}
+          animate={{
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.28, delay: 0.14, ease: [0.22, 1, 0.36, 1] },
           }}
+          exit={{
+            opacity: 0,
+            y: -14,
+            transition: { duration: 0.14, ease: "easeIn" },
+          }}
+          style={{ gridArea: "1 / 1", display: "inline-block" }}
         >
-          {word.split("").map((letter, letterIndex) => (
-            <motion.span
-              key={`${wordIndex}-${letterIndex}`}
-              variants={letterVariants}
-              style={{
-                position: "relative",
-                display: "inline-block",
-              }}
-            >
-              {letter}
-            </motion.span>
-          ))}
-        </span>
-      ))}
-    </motion.div>
+          {texts[currentIndex]}
+        </motion.span>
+      </AnimatePresence>
+    </span>
   );
 };
 
 const HeroSec = () => {
-  const text = "Wear Your Story...";
-  const words = text.split(" ");
   const [activeIndex, setActiveIndex] = useState(0);
-  const [videoLoaded, setVideoLoaded] = useState(false);
-
+  const [videoReady, setVideoReady] = useState(false);
   const location = useLocation();
 
-    useEffect(() => {
-      const interval = setInterval(() => {
-        setActiveIndex((prevIndex) => (prevIndex + 1) % words.length);
-      }, 2000); // 1 second per word
-      return () => clearInterval(interval);
-    }, [words.length]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % STORY_WORDS.length);
+    }, 1600);
+    return () => clearInterval(interval);
+  }, []);
 
-    const scrollTarget = (tid) => {
-      const element = document.getElementById(tid);
-      if (element) {
-        const offset = 100; // Set your desired offset here
-        const elementPosition = element.getBoundingClientRect().top + window.scrollY; // Get element position
-        const offsetPosition = elementPosition - offset; // Adjust for offset
-    
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth',
-        });
-      }
+  const scrollTarget = useCallback((tid) => {
+    const element = document.getElementById(tid);
+    if (element) {
+      const offset = 92;
+      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({
+        top: elementPosition - offset,
+        behavior: "smooth",
+      });
     }
-    
-    useEffect(() => {
-      if (location.state?.scrollTo) {
-        // Give the page a little time to render the target element
-        setTimeout(() => {
-          scrollTarget(location.state.scrollTo);
-        }, 300);
-      }
-    }, [location]);
+  }, []);
 
-    const textArray = [
-        "Style",
-        "Class",
-        "Desire",
-      ];
+  useEffect(() => {
+    if (location.state?.scrollTo) {
+      const timer = setTimeout(() => {
+        scrollTarget(location.state.scrollTo);
+      }, 250);
+      return () => clearTimeout(timer);
+    }
+  }, [location, scrollTarget]);
 
-      return (
-        <div className="hero-banner">
-{/*           <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            onCanPlayThrough={() => setVideoLoaded(true)} // detect when video can play
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              zIndex: -2,
-            }}
-          >
-            <source src={demo} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+  return (
+    <section className="hero-stage" aria-label="Veloura Hero Showcase">
+      {/* Full-bleed Ambient Video Background covering top to bottom */}
+      <video
+        className="hero-video"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        onLoadedData={() => setVideoReady(true)}
+        onCanPlay={() => setVideoReady(true)}
+        style={{ opacity: videoReady ? 1 : 0 }}
+      >
+        <source src={demo} type="video/mp4" />
+      </video>
 
-          {!videoLoaded && (
-            <div
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                backgroundColor: "#000", // fallback background
-                color: "#fff",
-                zIndex: -2,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "1.5rem",
-              }}
-            >
-              Loading video...
-            </div>
-          )}
+      {/* Subtle architectural dark scrim for crisp contrast */}
+      <div className="hero-scrim-top" aria-hidden="true" />
 
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              background: "linear-gradient(to top, rgba(255,255,255,0) 40%, rgba(255,255,255,1) 100%)",
-              zIndex: -1,
-            }}
-          /> */}
+      {/* Preserved white gradient dissolve from bottom into page canvas */}
+      <div className="hero-white-fade" aria-hidden="true" />
 
-          {/* Content */}
-          <div className="hero_layout">
-            <div>
-{/*               <h1 className="d-flex justify-content-center pl-3">
-                We represent <span className="pl-2"><TextCycle texts={textArray} /></span>
-              </h1> */}
-              <div className="d-flex justify-content-center pt-2">
-                <MediaQuery maxWidth={639}>
-                  <div  onClick={() => scrollTarget("deal")} className="butt" style={{ display: "inline-block",  backgroundColor: "black", border: "2px solid white" }}>
-                    <strong className="text-white">Check out</strong>
-                  </div>
-                </MediaQuery>
-                <MediaQuery minWidth={640}>
-                  <div onClick={() => scrollTarget("deal")} className="butt" style={{ display: "inline-block" }}>
-                    <strong>Check out</strong>
-                  </div>
-                </MediaQuery>
-              </div>
-              <div className="hero_mar" style={{ display: "flex", justifyContent: "center", gap: "0.8em", opacity: 0.7 }}>
-                {words.map((word, index) => (
-                  <span
-                    key={index}
-                    style={{
-                      color: index === activeIndex ? "#DD6410" : "gray",
-                      paddingTop: "0.3em",
-                      paddingBottom: "0.4em",
-                      transition: "color 0.5s ease-in-out",
-                      fontSize: "clamp(2.5rem, 4vw, 3rem)",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {word}
-                  </span>
-                ))}
-              </div>
-            </div>
+      {/* Clean Minimal Foreground Content */}
+      <div className="hero-inner">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+          className="hero-center-block"
+        >
+          <div className="d-flex flex-column align-items-center" style={{ gap: "0.75rem" }}>
+            <h1 className="hero-headline">
+              <span>We represent</span>
+              <TextCycle texts={CYCLING_WORDS} />
+            </h1>
+            <p className="hero-subline mb-0">
+              Effortless silhouettes tailored for everyday distinction.
+            </p>
           </div>
-        </div>
-      );
+
+          <button
+            type="button"
+            onClick={() => scrollTarget("deal")}
+            className="butt-glass"
+          >
+            <span>Check Out</span>
+            <motion.span
+              animate={{ y: [0, 4, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+              style={{ display: "inline-flex" }}
+            >
+              <FaArrowDown size={13} />
+            </motion.span>
+          </button>
+        </motion.div>
+
+        {/* Minimal "Wear Your Story..." kinetic text floating over bottom white gradient */}
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.75, delay: 0.2 }}
+          className="hero-story-stage"
+          aria-label="Wear Your Story"
+        >
+          {STORY_WORDS.map((word, index) => {
+            const isActive = index === activeIndex;
+            return (
+              <span
+                key={word}
+                className="hero-story-word"
+                style={{
+                  color: isActive ? "#DD6410" : "rgba(20, 19, 18, 0.62)",
+                  transform: isActive ? "translateY(-2px)" : "translateY(0)",
+                }}
+              >
+                {word}
+              </span>
+            );
+          })}
+        </motion.div>
+      </div>
+    </section>
+  );
 };
 
 export default HeroSec;

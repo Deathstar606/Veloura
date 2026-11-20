@@ -1,43 +1,97 @@
-import React from 'react';
-import { Col, Container, Row } from 'reactstrap';
-import about from "../images/about.jpg"
+import React from "react";
+import { Col, Container, Row } from "reactstrap";
+import { Link } from "react-router-dom";
+import { FaArrowRight } from "react-icons/fa6";
+import about from "../images/about.jpg";
 
 const VelouraCol = () => {
-
   return (
-    <div
+    <section
+      id="aboutus"
       style={{
         position: "relative",
-        backgroundImage: `url(${about})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        padding: "50px 0",
-        marginTop: "70px",
-        backgroundAttachment: "fixed",
-        height: "70vh",
+        minHeight: "68vh",
+        display: "flex",
+        alignItems: "center",
+        overflow: "hidden",
+        backgroundColor: "#241913",
       }}
     >
-      <Container id="aboutus" style={{ minWidth: "90%", height: "100%" }}>
-        <Row style={{ height: "100%", justifyContent: "center" }}>
-          <Col
-            md={6}
-            className="mb-4 d-flex justify-content-center align-items-center"
-            style={{ height: "100%" }}
-          >
-            <div 
-              style={{ textAlign: "center", color: "white", fontSize: "clamp(20px, 2.5vw, 28px)" }}>
-                <h1 className='p-2'>Veloura Collection</h1>
-                <p>
-                  Elevate Your Everyday Look
-                  Discover the perfect blend of style and functionality with our Veloura Collection. From timeless classics to bold modern frames, each piece is designed to fit comfortably and express your unique personality.
-                  Wear your story with confidence.
-                </p>
+      {/* Preserved & Compressed Background Image */}
+      <img
+        src={about}
+        alt="Veloura Collection Editorial"
+        loading="lazy"
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          objectPosition: "center 20%",
+          zIndex: 0,
+        }}
+      />
+
+      {/* Atmospheric gradient */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(120deg, rgba(14, 13, 12, 0.72) 0%, rgba(14, 13, 12, 0.35) 55%, rgba(14, 13, 12, 0.6) 100%)",
+          zIndex: 1,
+        }}
+      />
+
+      <Container style={{ maxWidth: "1360px", position: "relative", zIndex: 2, padding: "4rem 1.25rem" }}>
+        <Row className="justify-content-center">
+          <Col lg={7} md={9}>
+            <div
+              className="liquid-glass-dark text-center p-4 p-md-5"
+              style={{ borderRadius: "28px" }}
+            >
+              <span
+                className="eyebrow-label justify-content-center mb-2"
+                style={{ color: "#FFB067" }}
+              >
+                Signature Capsule
+              </span>
+              <h2
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "clamp(2.2rem, 4.5vw, 3.4rem)",
+                  fontWeight: 600,
+                  color: "#ffffff",
+                  marginBottom: "1rem",
+                }}
+              >
+                Veloura Collection
+              </h2>
+              <p
+                style={{
+                  fontSize: "clamp(0.95rem, 1.5vw, 1.08rem)",
+                  color: "rgba(255, 255, 255, 0.86)",
+                  lineHeight: 1.7,
+                  marginBottom: "1.6rem",
+                }}
+              >
+                Elevate your everyday look. Discover the perfect blend of tailored structure and breathable comfort — from timeless staples to bold contemporary statements crafted to help you wear your story with confidence.
+              </p>
+              <Link
+                to="/home/aboutus"
+                className="butt-glass"
+                style={{ textDecoration: "none" }}
+              >
+                <span>Our Story</span>
+                <FaArrowRight size={12} />
+              </Link>
             </div>
           </Col>
         </Row>
       </Container>
-    </div>
+    </section>
   );
 };
 

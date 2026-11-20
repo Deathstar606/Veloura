@@ -1,480 +1,490 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, CardImg, ButtonGroup, Button } from 'reactstrap';
-import { Loading } from './LoadingComponent';
-import { Breadcrumb } from './BreadCrumb';
-import { motion } from 'framer-motion';
-import MediaQuery from 'react-responsive';
+import React, { useState, useEffect } from "react";
+import { Container, Row, Col, ButtonGroup, Button } from "reactstrap";
+import { Loading } from "./LoadingComponent";
+import { Breadcrumb } from "./BreadCrumb";
+import { motion } from "framer-motion";
 import { Link, useParams } from "react-router-dom";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, EffectCoverflow } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
-import 'swiper/css/effect-coverflow';
-import './details.css'
-import { FaPhone, FaWhatsapp } from 'react-icons/fa6';
-
-/* function RenderRev ({reviews}) {
-    return (
-        <ul className="list-unstyled">
-            {reviews.map((rev) => {
-                return (
-                        <li>
-                        <p>{rev.review}</p>
-                        <p>{rev.rating} ⭐</p>
-                        <p>-- {rev.author.firstname} {rev.author.lastname} </p>
-                        </li>
-                );
-            })}
-        </ul>
-    )
-} */
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
+import "./details.css";
+import { FaPhone, FaWhatsapp, FaXmark } from "react-icons/fa6";
+import ProductVisual from "./ProductVisual";
 
 const Deats = (props) => {
-    const [mainImage, setMainImage] = useState('');
-    const [fullscreenImage, setFullscreenImage] = useState("");
-    const [selectedSize, setSelectedSize] = useState('');
-    const [colors, setColor] = useState('');
-    const [quantity, setQuantity] = useState(1);
+  const [mainImage, setMainImage] = useState("");
+  const [fullscreenImage, setFullscreenImage] = useState("");
+  const [selectedSize, setSelectedSize] = useState("");
+  const [colors, setColor] = useState("");
+  const [quantity, setQuantity] = useState(1);
 
-    const { category } = useParams();
-/*     const [rating, setRating] = useState(0);
-    const [review, setReview] = useState('');
-    const [lensMat, setLensMat] = useState("");
-    const [leftEye, setLeftEye] = useState("");
-    const [rightEye, setRightEye] = useState(""); */
+  const { category } = useParams();
 
-    const updateQuantity = (val) => {
-            if (selectedSize === '') {
-                alert("Please select a size first");
-                return    
-            }
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
-            if (!isNaN(val) && val >= 0 && val <= maxQuantity) {
-                setQuantity(val);
-            }
-        }
-
-    const handleOpenFullscreen = (imageUrl) => {
-        setFullscreenImage(imageUrl);
-      };
-
-    const handleCloseFullscreen = () => {
-        setFullscreenImage(null);
-      };
-
-    const handleSizeChange = (size) => {
-        setSelectedSize(size);
-        if (props.deats.size[size] > 0) {
-            setQuantity(1);
-        }
-        else {
-            setQuantity(0);
-        }
+  useEffect(() => {
+    if (props.deats && Array.isArray(props.deats.color) && props.deats.color.length > 0) {
+      const activeColor =
+        colors && props.deats.color.includes(colors) ? colors : props.deats.color[0];
+      if (activeColor !== colors) {
+        setColor(activeColor);
+      }
+      const imageUrl = props.deats.images?.[activeColor]?.[0] || "";
+      setMainImage(imageUrl);
+    } else {
+      setColor("");
+      setMainImage("");
     }
+  }, [props.deats, colors]);
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-      }, []);
+  if (props.isLoading) {
+    return <Loading fullScreen />;
+  }
 
-    useEffect(() => {
-        if (props.deats) {
-            if (colors === '' || !props.deats.color.includes(colors)) {
-                setColor(props.deats.color[0]); 
-            }
+  if (props.errMess) {
+    return (
+      <Container className="py-5 text-center">
+        <h4>{props.errMess}</h4>
+      </Container>
+    );
+  }
 
-            if (props.deats.color.includes(colors)) {
-                const imageUrl = props.deats.images[colors]?.[0];
-                if (imageUrl) {
-                    setMainImage(imageUrl);
-                }
-            }
-        } else {
-            setColor('');
-        }
-    }, [props.deats, colors]);
+  if (!props.deats) {
+    return (
+      <Container className="py-5 text-center" style={{ minHeight: "65vh" }}>
+        <span className="eyebrow-label justify-content-center mb-2">Veloura Atelier</span>
+        <h2 className="section-heading mb-3">Piece Not Found</h2>
+        <p className="text-muted mb-4">
+          This garment may have been moved or sold out.
+        </p>
+        <Link to="/home" className="butt">
+          Return Home
+        </Link>
+      </Container>
+    );
+  }
 
-    const discountedPrice = props.deats?.discount
-    ? Math.round(props.deats.price - (props.deats.price * (props.deats.discount / 100)))
+  const maxQuantity = props.deats?.size?.[selectedSize] || 1;
+  const discountedPrice = props.deats?.discount
+    ? Math.round(props.deats.price - props.deats.price * (props.deats.discount / 100))
     : null;
 
-    const handleChange = (c) => {
-        setColor(c)
+  const updateQuantity = (val) => {
+    if (selectedSize === "") {
+      alert("Please select a size first");
+      return;
     }
-
-    const maxQuantity = props.deats.size?.[selectedSize] || 1;
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (selectedSize == "") return alert("Please select a size")
-        if (quantity == 0) return alert("This Size is out of stock")
-        props.addNewOrder(
-            {
-                cart_id: Math.floor(100000 + Math.random() * 900000),
-                _id: props.deats._id,
-                category: category,
-                name: props.deats.name,
-                price: discountedPrice? discountedPrice : props.deats.price,
-                color: colors,
-                image: props.deats.images[colors][0],
-                size: selectedSize,
-                quantity: quantity,
-            }
-        );
-        props.toggleCart();
+    if (!isNaN(val) && val >= 0 && val <= maxQuantity) {
+      setQuantity(val);
     }
+  };
 
-    const sizes = Object.entries(props.deats?.size || {}).map(([size, stock]) => (
-            <Button
-                key={size}
-                outline
-                color="dark"
-                onClick={() => handleSizeChange(size)}
-                active={selectedSize === size}
+  const handleSizeChange = (size) => {
+    setSelectedSize(size);
+    if ((props.deats?.size?.[size] || 0) > 0) {
+      setQuantity(1);
+    } else {
+      setQuantity(0);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (selectedSize === "") return alert("Please select a size");
+    if (quantity === 0) return alert("This size is out of stock");
+
+    props.addNewOrder({
+      cart_id: Math.floor(100000 + Math.random() * 900000),
+      _id: props.deats._id,
+      category: category,
+      name: props.deats.name,
+      price: discountedPrice ? discountedPrice : props.deats.price,
+      color: colors,
+      image: props.deats.images?.[colors]?.[0] || "",
+      size: selectedSize,
+      quantity: quantity,
+    });
+    props.toggleCart();
+  };
+
+  const activeGallery = props.deats.images?.[colors] || [];
+
+  return (
+    <>
+      <div
+        className="w-100 text-white text-center py-2 mb-3"
+        style={{
+          backgroundColor: "var(--bg-obsidian)",
+          fontSize: "0.75rem",
+          fontWeight: 600,
+          letterSpacing: "0.18em",
+          textTransform: "uppercase",
+        }}
+      >
+        5% off on all online payments
+      </div>
+
+      <Container style={{ maxWidth: "1360px" }} className="pb-5">
+        <div className="mb-3">
+          <Breadcrumb
+            items={[
+              { name: "Home", link: "/home", active: false },
+              {
+                name: category,
+                link: `/home/${encodeURIComponent(category)}`,
+                active: false,
+              },
+              {
+                name: (
+                  <strong style={{ color: "var(--accent)" }}>
+                    {props.deats.name}
+                  </strong>
+                ),
+                link: "",
+                active: true,
+              },
+            ]}
+          />
+        </div>
+
+        <Row className="g-4 align-items-start">
+          {/* Desktop Thumbnails */}
+          <Col md={2} className="d-none d-md-flex justify-content-end">
+            <div className="image-previews w-100" style={{ maxWidth: "110px" }}>
+              {activeGallery.map((img, index) => (
+                <div
+                  key={index}
+                  onClick={() => setMainImage(img)}
+                  style={{
+                    width: "100%",
+                    aspectRatio: "4 / 5",
+                    borderRadius: "14px",
+                    overflow: "hidden",
+                    cursor: "pointer",
+                    marginBottom: "0.75rem",
+                    border:
+                      mainImage === img
+                        ? "2px solid var(--accent)"
+                        : "1px solid var(--hairline)",
+                  }}
+                >
+                  <ProductVisual
+                    src={img}
+                    alt={`${props.deats.name} view ${index + 1}`}
+                    colorHint={colors}
+                    compact
+                  />
+                </div>
+              ))}
+            </div>
+          </Col>
+
+          {/* Desktop Main Visual */}
+          <Col md={5} className="d-none d-md-block">
+            <div
+              onClick={() => setFullscreenImage(mainImage || "placeholder")}
+              style={{
+                aspectRatio: "4 / 5",
+                width: "100%",
+                borderRadius: "24px",
+                overflow: "hidden",
+                cursor: "zoom-in",
+                boxShadow: "0 18px 46px rgba(15, 14, 12, 0.1)",
+              }}
             >
-                {size}
-            </Button>
-    ));
-
-/*     const similar = props.similar
-        .filter((element) => element.shape === props.deats.shape && element._id !== props.deats._id)
-        .slice(0, 6) // Limit to 6 products
-        .map((element) => (
-            <Col md={3} key={element._id}>
-                <Product child={element} />
-            </Col>
-        ));
-
-    const handleRatingChange = (newRating) => {
-        setRating(newRating);
-    };
-
-    const handleReviewChange = (event) => {
-        setReview(event.target.value);
-    };
-
-    const handleSubmit = () => {
-        props.postReview(props.deats._id, rating, review);
-    };
-
-    const handleOpenPanel = (panelType) => {
-        setCurrentPanel(panelType);
-        setIsPanelOpen(true);
-    };
-
-    const handleClosePanel = () => {
-        setIsPanelOpen(false);
-        setCurrentPanel('');
-    };
-
-    const handleMaterialSelect = (material) => {
-        setLensMat(material);
-        handleOpenPanel('power');
-    };
-
-    const handleRightEye = (event) => {
-        setRightEye(event.target.value);
-    };
-
-    const handleLeftEye = (event) => {
-        setLeftEye(event.target.value);
-    };
-
-    const handleOrder = () => {
-        props.addNewOrder(
-            {
-                _id: props.deats._id,
-                name: props.deats.name,
-                price: discountedPrice? discountedPrice : props.deats.price,
-                color: colors,
-                image: props.deats.images[colors][0],
-                lensMat: lensMat,
-                leftEye: leftEye,
-                rightEye: rightEye
-            }
-        )
-    }; */
-    
-    if (props.isLoading) {
-        return (
-            <div className="container">
-                <div className="row">
-                    <Loading />
-                </div>
+              <ProductVisual
+                src={mainImage}
+                alt={props.deats.name}
+                colorHint={colors}
+                subLabel="Studio View"
+              />
             </div>
-        );
-    } else if (props.errMess) {
-        return (
-            <div className="container">
-                <div className="row">
-                    <h4>{props.errMess}</h4>
-                </div>
-            </div>
-        );
-    } else if (props.deats?.color?.length > 0 && colors) {
-        return (
-            <>
-            <div className='w-100 text-white text-center py-2 mb-4' style={{backgroundColor: "black"}}>
-                5% off on all online payments
-            </div>
-            <Container style={{ maxWidth: "90%" }} className='pb-5'>
-                <MediaQuery maxWidth={639}>
-                    <Row style={{ maxWidth: '100%', overflow: 'hidden' }}>
-                    <Breadcrumb
-                        style={{
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        display: 'block',       // make sure it's treated like a block
-                        width: '100%'           // make sure it doesn't overflow the parent
-                        }}
-                        items={[
-                        { name: 'Home', link: '/home', active: false },
-                        { name: category, link: `/home/${encodeURIComponent(category)}`, active: false },
-                        { name: <span style={{color: "rgb(255, 153, 0)"}}><strong>{props.deats.name}</strong></span>, link: '', active: true }
-                        ]}
+          </Col>
+
+          {/* Mobile Swiper Gallery */}
+          <Col xs={12} className="d-md-none mb-2">
+            <Swiper
+              className="mb-2"
+              slidesPerView={1}
+              spaceBetween={12}
+              pagination={{ clickable: true }}
+              modules={[Pagination]}
+            >
+              {(activeGallery.length > 0 ? activeGallery : [""]).map((img, index) => (
+                <SwiperSlide key={index}>
+                  <div
+                    onClick={() => setFullscreenImage(img || "placeholder")}
+                    style={{
+                      aspectRatio: "4 / 5",
+                      borderRadius: "20px",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <ProductVisual
+                      src={img}
+                      alt={props.deats.name}
+                      colorHint={colors}
+                      subLabel={`Look ${index + 1}`}
                     />
-                    </Row>
-                </MediaQuery>
-                <Row /* className='d-flex justify-content-center' */>
-                    <MediaQuery minWidth={640}>
-                        <Col md={2}>
-                            <Breadcrumb 
-                                items={[
-                                { name: 'Home', link: '/home', active: false },
-                                { name: category, link: `/home/${category}`, active: false },
-                                {
-                                name: (
-                                    <span style={{ color: "rgb(255, 153, 0)", whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'inline-block', maxWidth: 150 }}>
-                                        <strong>{props.deats.name}</strong>
-                                    </span>
-                                ),
-                                link: '',
-                                active: true,
-                                }
-                            ]} />
-                        </Col>
-                        <Col md={2} className="mx-0" style={{ height: '80vh', display: "flex", justifyContent: "end"}}>
-                            <div className="image-previews">
-                                {props.deats.images[colors]?.map((img, index) => (
-                                    <img
-                                        key={index}
-                                        src={img}
-                                        alt="Preview"
-                                        className="img-thumbnail"
-                                        onClick={() => setMainImage(img)}
-                                    />
-                                ))}
-                            </div>
-                        </Col>
-                        <Col md={5} className='mx-0 d-flex justify-content-center'>
-                            <img onClick={() => handleOpenFullscreen(mainImage)} src={mainImage} alt="Main" style={{ width: '90%', objectFit: 'fill', height: "80vh" }} />
-                        </Col>
-                    </MediaQuery>
-                    <MediaQuery maxWidth={639}>
-                        <Swiper
-                            style={{zIndex: "0"}}
-                            className='mb-2'
-                            slidesPerView={'1'}
-                            spaceBetween={15}
-                            pagination={{
-                            clickable: true,
-                            }}
-                            modules={[ Pagination, EffectCoverflow]}
-                        >
-                            {props.deats.images[colors]?.map((img, index) => (
-                                <SwiperSlide>
-                                    <div style={{height: "50vh"}}>
-                                        <CardImg onClick={() => handleOpenFullscreen(img)} className="acrd" style={{position: "relative"}} src={img}/>
-                                    </div>
-                                </SwiperSlide>
-                            ))}                            
-                        </Swiper>
-                    </MediaQuery>
-                    <Col md={2} className='d-flex align-items-center'>
-                        <div className="w-100">
-                            <h4>{props.deats.name}</h4>
-                            <div className="color-options d-flex pt-1 pb-2">
-                                {props.deats.color.map((col, index) => (
-                                    <div
-                                        key={index}
-                                        className="color-box"
-                                        style={{ backgroundColor: col, width: '25px', height: '25px', marginRight: '10px',  marginBottom: "10px", borderRadius: '50%' }}
-                                        onClick={() => handleChange(col)} // Add logic for color selection if needed
-                                    />
-                                ))}
-                            </div>
-                            <div className='d-flex'>
-                                <h5>
-                                    {discountedPrice ? (
-                                        <>
-                                            <span className='text-muted mr-2' style={{ textDecoration: 'line-through' }}>
-                                                {props.deats.price}TK
-                                            </span>
-                                            <span className="text-danger ms-2">
-                                                {discountedPrice}TK
-                                            </span>
-                                        </>
-                                    ) : (
-                                        `${props.deats.price} TK`
-                                    )}
-                                </h5>
-                                <div className='mb-2 ml-2'>
-                                    {props.deats.discount && (
-                                        <span className="badge bg-danger">{props.deats.discount}% OFF</span>
-                                    )}
-                                </div>                                
-                            </div>
-                            <ButtonGroup className="mt-2">
-                                {sizes}
-                            </ButtonGroup>
-                            {selectedSize && props.deats.size[selectedSize] < 5 && (
-                                <div style={{ fontSize: '0.9rem', marginTop: '4px', color: 'black' }}>
-                                    Stock remaining: {props.deats.size[selectedSize]}
-                                </div>
-                            )}
-                            {selectedSize && props.deats.size[selectedSize] > 0 && (
-                                <>
-                                    <h5 className='mt-3'>Quantity</h5>
-                                    <div className="d-flex align-items-center mt-1 mb-3">
-                                        <Button outline onClick={() => updateQuantity(quantity - 1)}>−</Button>
-                                        <input
-                                            type="text"
-                                            className="form-control text-center mx-2"
-                                            value={quantity}
-                                            onChange={(e) => {
-                                                const val = parseInt(e.target.value, 10);
-                                                updateQuantity(val);
-                                            }}
-                                            style={{ width: '40px', border: "2px solid rgb(255, 153, 0)" }}
-                                        />
-                                        <Button outline onClick={() => updateQuantity(quantity + 1)}>+</Button>
-                                    </div>
-                                </>
-                            )}
-                            <div className="mt-3 w-100">
-                                <button onClick={handleSubmit} className='butt'><strong>Buy Now<span className='ml-1' style={{color: "rgb(255, 153, 0)"}}>!!</span></strong></button>
-                            </div>
-                            <div className='d-flex mt-3'>
-                                <a href='https://wa.me/+8801924223600' target='_blank' rel='noopener noreferrer'>
-                                    <FaWhatsapp className='mr-2' color='green' size={30} />
-                                </a>
-                                <a href='tel:01629743377'>
-                                    <FaPhone color='black' size={25} />
-                                </a>
-                            </div>
-                        </div>
-                    </Col>
-                </Row>
-                        {fullscreenImage && (
-                            <motion.div
-                                className="fullscreen-preview"
-                                initial={{ opacity: 0, scale: 0 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0 }}
-                                transition={{duration: 0.25}}
-                                layoutId="fullscreen-preview"
-                            >
-                                <div onClick={handleCloseFullscreen} style={{position: "absolute", top:10, right: 10}}>✖</div>
-                                <CardImg src={fullscreenImage} alt="Full Screen Preview" />
-                            </motion.div>
-                        )}
-                    <Row className='mt-4 d-flex justify-content-center'>
-                        <Col md={6}>
-                            <h4 className='pt-4'>Description</h4>
-                            <p className='pb-4'>{props.deats.description}</p>
-                            <motion.div 
-                                initial={{ opacity: 0, y: 50 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5 }}
-                                viewport={{ once: true }}>
-                                <div className="text-center mt-4 mb-1">
-                                    <h5 className="fw-bold">Size Chart</h5>
-                                </div>
-                                <div style={{ overflowX: "auto", whiteSpace: "nowrap", scrollbarWidth: "none" }}>
-                                    <table className="table table-bordered text-center">
-                                        <thead className="table-light">
-                                            <tr>
-                                                <th>Measurement Points Inch</th>
-                                                <th>M</th>
-                                                <th>L</th>
-                                                <th>XL</th>
-                                                <th>XXL</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>Length Standard (Inch)</td>
-                                                <td>38</td>
-                                                <td>40</td>
-                                                <td>42</td>
-                                                <td>44</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </motion.div>
-                        </Col>
-{/*                         <Col md={6}>
-                            
-                        </Col> */}
-                    </Row>
-{/*                 <Row className="mt-4">
-                    <Col>
-                        <h5>Add a Review</h5>
-                        <Row className='mt-4'>
-                            <Col md={9}>
-                                <ReactStars
-                                    className='mb-2'
-                                    count={5} // Number of stars
-                                    value={rating} // Current rating
-                                    onChange={handleRatingChange} // Handle rating change
-                                    size={24} // Size of the stars
-                                    activeColor="#ffd700" // Color of the active star
-                                />
-                                <Form>
-                                    <FormGroup>
-                                        <Input
-                                            type="textarea"
-                                            placeholder="Write your review here"
-                                            style={{
-                                                borderColor: '#CDCDCD',
-                                                borderRadius: '7px',
-                                                padding: '10px',
-                                                minHeight: '100px',
-                                                overflow: 'hidden',
-                                                resize: 'none'
-                                            }}
-                                            onChange={handleReviewChange}
-                                        />
-                                    </FormGroup>
-                                </Form>
-                            </Col>
-                            <MediaQuery minWidth={639}>
-                                <Col md={2} className='mt-5'>
-                                    <button className='butt' onClick={handleSubmit}>
-                                        Submit Review
-                                    </button>
-                                </Col>
-                            </MediaQuery>
-                            <MediaQuery maxWidth={638}>
-                                <Col md={3} className='mt-1 mb-4'>
-                                    <button className='butt' onClick={handleSubmit}>
-                                        Submit Review
-                                    </button>
-                                </Col>
-                            </MediaQuery>
-                        </Row>
-                    </Col>
-                </Row> */}
-                {/* <h2 className='mt-5'>You Might Also Like</h2> */}
-{/*                 <Row className='mt-5 mb-5'>
-                    {similar}
-                </Row>  */}
-            </Container>
-            </>
-        );
-    }
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </Col>
+
+          {/* Product Details & Purchase Panel */}
+          <Col md={5} xs={12}>
+            <div
+              className="liquid-glass p-4 p-lg-5"
+              style={{ borderRadius: "24px" }}
+            >
+              <span className="eyebrow-label mb-2">{category}</span>
+              <h1
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "clamp(1.9rem, 3vw, 2.65rem)",
+                  fontWeight: 600,
+                  marginBottom: "0.75rem",
+                }}
+              >
+                {props.deats.name}
+              </h1>
+
+              {/* Price + Discount */}
+              <div className="d-flex align-items-center mb-3 tabular-price" style={{ gap: "0.75rem" }}>
+                {discountedPrice ? (
+                  <>
+                    <span
+                      className="text-muted"
+                      style={{ textDecoration: "line-through", fontSize: "1.05rem" }}
+                    >
+                      {props.deats.price} TK
+                    </span>
+                    <span
+                      style={{
+                        color: "var(--accent)",
+                        fontSize: "1.45rem",
+                        fontWeight: 700,
+                      }}
+                    >
+                      {discountedPrice} TK
+                    </span>
+                    <span className="badge bg-danger text-white px-2 py-1">
+                      {props.deats.discount}% OFF
+                    </span>
+                  </>
+                ) : (
+                  <span style={{ fontSize: "1.45rem", fontWeight: 700 }}>
+                    {props.deats.price} TK
+                  </span>
+                )}
+              </div>
+
+              {/* Colors */}
+              <div className="mb-3">
+                <div className="small text-uppercase font-weight-bold mb-2" style={{ letterSpacing: "0.12em" }}>
+                  Color: <span className="text-muted">{colors}</span>
+                </div>
+                <div className="color-options d-flex align-items-center">
+                  {(props.deats.color || []).map((col, index) => (
+                    <button
+                      type="button"
+                      key={index}
+                      aria-label={`Choose color ${col}`}
+                      className={`color-box ${colors === col ? "active-swatch" : ""}`}
+                      style={{
+                        backgroundColor: col.trim(),
+                        width: "26px",
+                        height: "26px",
+                        marginRight: "10px",
+                      }}
+                      onClick={() => setColor(col)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Sizes */}
+              <div className="mb-3">
+                <div className="small text-uppercase font-weight-bold mb-2" style={{ letterSpacing: "0.12em" }}>
+                  Select Size
+                </div>
+                <ButtonGroup className="flex-wrap" style={{ gap: "0.4rem" }}>
+                  {Object.entries(props.deats?.size || {}).map(([size]) => (
+                    <Button
+                      key={size}
+                      outline
+                      color="dark"
+                      onClick={() => handleSizeChange(size)}
+                      active={selectedSize === size}
+                      style={{
+                        borderRadius: "999px",
+                        minWidth: "48px",
+                        fontWeight: 600,
+                        fontSize: "0.82rem",
+                      }}
+                    >
+                      {size}
+                    </Button>
+                  ))}
+                </ButtonGroup>
+              </div>
+
+              {selectedSize && (props.deats.size?.[selectedSize] || 0) < 5 && (
+                <div className="small mb-2" style={{ color: "var(--accent)", fontWeight: 600 }}>
+                  Stock remaining: {props.deats.size[selectedSize]}
+                </div>
+              )}
+
+              {selectedSize && (props.deats.size?.[selectedSize] || 0) > 0 && (
+                <div className="mt-3 mb-4">
+                  <div className="small text-uppercase font-weight-bold mb-2" style={{ letterSpacing: "0.12em" }}>
+                    Quantity
+                  </div>
+                  <div className="d-flex align-items-center">
+                    <Button outline color="dark" onClick={() => updateQuantity(quantity - 1)}>
+                      −
+                    </Button>
+                    <input
+                      type="text"
+                      className="form-control text-center mx-2 tabular-price"
+                      value={quantity}
+                      onChange={(e) => {
+                        const val = parseInt(e.target.value, 10);
+                        updateQuantity(val);
+                      }}
+                      style={{
+                        width: "54px",
+                        border: "1.5px solid var(--accent)",
+                        borderRadius: "999px",
+                      }}
+                    />
+                    <Button outline color="dark" onClick={() => updateQuantity(quantity + 1)}>
+                      +
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              <div className="mt-4">
+                <button type="button" onClick={handleSubmit} className="butt-glass w-100">
+                  Buy Now
+                </button>
+              </div>
+
+              <div className="d-flex align-items-center mt-4 pt-3" style={{ gap: "0.85rem", borderTop: "1px solid var(--hairline)" }}>
+                <span className="small text-muted">Need sizing help?</span>
+                <a
+                  href="https://wa.me/+8801924223600"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="WhatsApp support"
+                >
+                  <FaWhatsapp color="#198754" size={24} />
+                </a>
+                <a href="tel:01629743377" aria-label="Phone support">
+                  <FaPhone color="#141312" size={19} />
+                </a>
+              </div>
+            </div>
+          </Col>
+        </Row>
+
+        {/* Fullscreen Modal */}
+        {fullscreenImage && (
+          <motion.div
+            className="fullscreen-preview"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setFullscreenImage("")}
+          >
+            <button
+              type="button"
+              onClick={() => setFullscreenImage("")}
+              aria-label="Close fullscreen preview"
+              className="nav-cart-btn position-absolute"
+              style={{ top: "20px", right: "20px", zIndex: 10 }}
+            >
+              <FaXmark size={18} />
+            </button>
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                width: "min(90vw, 520px)",
+                aspectRatio: "4 / 5",
+                borderRadius: "24px",
+                overflow: "hidden",
+              }}
+            >
+              <ProductVisual
+                src={fullscreenImage === "placeholder" ? "" : fullscreenImage}
+                alt={props.deats.name}
+                colorHint={colors}
+                subLabel="Full Screen Preview"
+              />
+            </div>
+          </motion.div>
+        )}
+
+        {/* Description & Size Chart */}
+        <Row className="mt-5 justify-content-center">
+          <Col lg={8} md={10}>
+            <div
+              className="p-4 p-md-5"
+              style={{
+                backgroundColor: "#ffffff",
+                borderRadius: "24px",
+                border: "1px solid var(--hairline)",
+              }}
+            >
+              <span className="eyebrow-label mb-2">Details &amp; Craft</span>
+              <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.9rem", fontWeight: 600 }}>
+                Description
+              </h3>
+              <p style={{ color: "var(--text-muted)", lineHeight: 1.75, whiteSpace: "pre-line" }}>
+                {props.deats.description}
+              </p>
+
+              <div className="mt-4 pt-3" style={{ borderTop: "1px solid var(--hairline)" }}>
+                <h4
+                  className="text-center mb-3"
+                  style={{ fontFamily: "var(--font-display)", fontSize: "1.55rem", fontWeight: 600 }}
+                >
+                  Size Chart
+                </h4>
+                <div style={{ overflowX: "auto", whiteSpace: "nowrap" }}>
+                  <table className="table table-bordered text-center mb-0">
+                    <thead className="table-light">
+                      <tr>
+                        <th>Measurement Points (Inch)</th>
+                        <th>M</th>
+                        <th>L</th>
+                        <th>XL</th>
+                        <th>XXL</th>
+                      </tr>
+                    </thead>
+                    <tbody className="tabular-price">
+                      <tr>
+                        <td>Length Standard (Inch)</td>
+                        <td>38</td>
+                        <td>40</td>
+                        <td>42</td>
+                        <td>44</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    </>
+  );
 };
 
 export default Deats;

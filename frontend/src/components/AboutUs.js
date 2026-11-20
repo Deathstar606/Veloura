@@ -1,76 +1,170 @@
-import React from "react";
-import aboutPic from "../images/about_real.jpg"
+import React, { useEffect } from "react";
+import aboutPic from "../images/about_real.jpg";
 import { motion } from "framer-motion";
-import { Col, Container, Row, CardImg } from "reactstrap";
+import { Col, Container, Row } from "reactstrap";
+import { FaFacebook, FaInstagram, FaPhone, FaEnvelope } from "react-icons/fa6";
 import { Breadcrumb } from "./BreadCrumb";
-import MediaQuery from "react-responsive";
+
+const BRAND_PILLARS = [
+  {
+    title: "Quality Assurance",
+    text: "Sourced from vetted ateliers with crisp weave inspection and lasting comfort.",
+  },
+  {
+    title: "Dedicated Support",
+    text: "Personal sizing guidance and responsive post-order care from our Dhaka & Khulna team.",
+  },
+  {
+    title: "Encrypted Checkout",
+    text: "SSLCommerz verified payments, Cash on Delivery, and transparent delivery timelines.",
+  },
+];
 
 function About() {
-    return (
-        <motion.div
-        style={{ paddingTop: "2rem" }}
-        transition={{duration: 0.5, type: "tween", ease: "easeIn"}}
-        initial = {{x: 1000, opacity: 0}}
-        animate= {{x: 0, opacity: 1}}
-        exit= {{x: -1000, opacity: 0}}>
-            <MediaQuery maxWidth={639}>
-              <Breadcrumb items={[
-                { link: '/home', active: false },
-                { name: <span><strong style={{color: "rgb(255, 153, 0)"}}>About Us</strong></span>, link: '', active: true }
-              ]} />
-            </MediaQuery>
-            <Container
-                style={{ minHeight: "100vh", maxWidth: "88%" }}
-                className="align-items-center justify-content-center"
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  return (
+    <motion.div
+      style={{ padding: "1.5rem 0 4.5rem" }}
+      initial={{ opacity: 0, y: 18 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <Container style={{ maxWidth: "1260px" }}>
+        <Breadcrumb
+          items={[
+            { link: "/home", active: false },
+            {
+              name: <strong style={{ color: "var(--accent)" }}>About Us</strong>,
+              link: "",
+              active: true,
+            },
+          ]}
+        />
+
+        <Row className="align-items-center mt-4 g-4 g-lg-5">
+          <Col lg={5} md={6} className="mb-4 mb-md-0">
+            <div
+              style={{
+                position: "relative",
+                borderRadius: "24px",
+                overflow: "hidden",
+                aspectRatio: "3 / 4",
+                boxShadow: "0 20px 50px rgba(15, 14, 12, 0.12)",
+              }}
             >
-                <MediaQuery minWidth={640}>
-                  <Breadcrumb items={[
-                    { link: '/home', active: false },
-                    { name: <span><strong style={{color: "rgb(255, 153, 0)"}}>About Us</strong></span>, link: '', active: true }
-                  ]} />
-                </MediaQuery>
-                <Row className="w-100 pb-5 mt-4">
-                    <Col md={6} className="d-flex justify-content-center align-items-center">
-                        <motion.div
-                        className="mb-4"
-                        style={{width: "100%"}}
-                        initial = {{x: 50, opacity: 0}}
-                        transition={{ duration: 1, delay: 0.75, type: "tween", ease: "easeIn" }}
-                        whileInView={{x: 0, opacity: 1}}
-                        viewport={{ once: true }}>
-                            <CardImg
-                                src={aboutPic}
-                                style={{ objectFit: "cover", maxHeight: "100%", maxWidth: "100%" }}
-                            ></CardImg>
-                        </motion.div>
-                    </Col>
-                    <Col md={6} className="d-flex align-items-center">
-                        <div>
-                            <p>
-                                VELOURA is an online destination committed to providing high-quality products and an exceptional shopping experience for our customers. Established 2025, we have been dedicated to offering a wide range of Clothing category to meet various needs and preferences.
-                            </p>
-                            <h3>Our Mission</h3>
-                            <p>
-                                Veloura is more than just clothing it’s a lifestyle. We are a fashion-forward brand born from the idea that style should be effortless, expressive, and accessible. Our collections are designed for those who aren’t afraid to stand out. From timeless staples to bold statement pieces, every item is crafted with care, comfort, and creativity in mind. At Veloura, we believe fashion is a form of self-expression — and we’re here to help you wear your story with confidence. We strive to Through our commitment to excellence and customer satisfaction.
-                            </p>
-                            <h3>Why Choose Us</h3>
-                            <ul>
-                                <li>Quality Assurance: We source our products from reputable suppliers and brands, ensuring high-quality standards.</li>
-                                <li>Exceptional Customer Service: Our dedicated customer support team is here to assist you and ensure a smooth shopping experience.</li>
-                                <li>Secure Shopping: We prioritize the security of your transactions and personal information through secure payment methods and data encryption.</li>
-                            </ul>
-                            <h3>Our Commitment</h3>
-                            <p>We are committed to fostering lasting relationships with our customers by delivering excellence in product quality, service, and reliability. VELOURA strives to evolve continually, exploring new trends, and expanding our product range to meet your ever-changing needs.
-                            Connect With Us</p>
-                            <p>Follow us on social media platforms FACEBOOK,INSTAGRAM to stay updated on our latest products, promotions, and exciting offers. Feel free to contact us at </p>
-                            <p>velourabd.online@gmail.com or 01629743377 for any inquiries or assistance.
-                            Thank you for choosing VELOURA. We appreciate your trust and support in our journey to provide you with exceptional products and service.</p>
-                        </div>
-                    </Col>
-                </Row>
-            </Container>
-        </motion.div>
-    );
+              <img
+                src={aboutPic}
+                alt="Veloura Brand Editorial"
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+              <span
+                className="liquid-glass-dark position-absolute px-3 py-2"
+                style={{
+                  bottom: "16px",
+                  left: "16px",
+                  borderRadius: "999px",
+                  fontSize: "0.7rem",
+                  fontWeight: 600,
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                }}
+              >
+                Established 2025 · Bangladesh
+              </span>
+            </div>
+          </Col>
+
+          <Col lg={7} md={6}>
+            <span className="eyebrow-label mb-2">Our Atelier</span>
+            <h1 className="section-heading mb-3">Wear Your Story with Confidence.</h1>
+            <p style={{ color: "var(--text-muted)", fontSize: "1rem", lineHeight: 1.75 }}>
+              <strong>VELOURA</strong> is a contemporary menswear destination built around the idea that great style should feel effortless, expressive, and enduring. From refined staples to statement silhouettes, every garment is crafted with care, comfort, and precision.
+            </p>
+
+            <Row className="g-3 mt-3 mb-4">
+              {BRAND_PILLARS.map((pillar) => (
+                <Col sm={4} xs={12} key={pillar.title} className="mb-2 mb-sm-0">
+                  <div
+                    className="liquid-glass h-100 p-3"
+                    style={{ borderRadius: "18px" }}
+                  >
+                    <h3
+                      style={{
+                        fontFamily: "var(--font-display)",
+                        fontSize: "1.2rem",
+                        fontWeight: 600,
+                        marginBottom: "0.35rem",
+                      }}
+                    >
+                      {pillar.title}
+                    </h3>
+                    <p
+                      className="mb-0"
+                      style={{ fontSize: "0.82rem", color: "var(--text-muted)", lineHeight: 1.5 }}
+                    >
+                      {pillar.text}
+                    </p>
+                  </div>
+                </Col>
+              ))}
+            </Row>
+
+            <div
+              className="p-3 p-md-4"
+              style={{
+                borderRadius: "20px",
+                backgroundColor: "var(--bg-bone)",
+                border: "1px solid var(--hairline)",
+              }}
+            >
+              <div className="eyebrow-label mb-2">Connect With Us</div>
+              <p className="mb-3" style={{ fontSize: "0.88rem", color: "var(--text-muted)" }}>
+                Reach out for sizing assistance, bespoke inquiries, or order updates.
+              </p>
+              <div className="d-flex flex-wrap align-items-center" style={{ gap: "0.75rem" }}>
+                <a
+                  href="mailto:velourabd.online@gmail.com"
+                  className="butt"
+                  style={{ padding: "0.55rem 1.15rem", fontSize: "0.72rem" }}
+                >
+                  <FaEnvelope size={12} /> Email Us
+                </a>
+                <a
+                  href="tel:01629743377"
+                  className="butt"
+                  style={{ padding: "0.55rem 1.15rem", fontSize: "0.72rem" }}
+                >
+                  <FaPhone size={12} /> 01629743377
+                </a>
+                <a
+                  href="https://www.facebook.com/velourabd"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Veloura Facebook"
+                  className="nav-cart-btn"
+                >
+                  <FaFacebook size={16} />
+                </a>
+                <a
+                  href="https://www.instagram.com/velourabd"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Veloura Instagram"
+                  className="nav-cart-btn"
+                >
+                  <FaInstagram size={16} />
+                </a>
+              </div>
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    </motion.div>
+  );
 }
 
 export default About;

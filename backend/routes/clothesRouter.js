@@ -1,16 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const cloudinary = require('cloudinary').v2;
+const bucket = require("../firebaseAdmin");
 const cors = require('./cors');
 
 const Clothes = require('../models/clothes');
 var authenticate = require('../authenticate');
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
 
 const ClothesRouter = express.Router();
 
@@ -21,6 +15,7 @@ ClothesRouter.route('/')
 .get(cors.cors, async (req, res, next) => {
     try {
         const cloth = await Clothes.find(req.query)
+        .lean();
         res.status(200).json(cloth);
     } catch (error) {
         next(error);
@@ -88,47 +83,44 @@ ClothesRouter.route('/:category/:clothesId')
         next(err);
     }
 })
-.delete(cors.cors, async (req, res, next) => {
-  try {
+.delete(cors.cors, authenticate.verifyUser, async (req, res, next) => {
+    try {
       const { category, clothesId } = req.params;
 
-      // Step 1: Find the category document
+      // Step 1: Find category document
       const categoryDoc = await Clothes.findOne({ category });
       if (!categoryDoc) {
-          return res.status(404).json({ error: `Category ${category} not found` });
+        return res.status(404).json({ error: `Category ${category} not found` });
       }
 
       // Step 2: Find the specific item by ID
       const itemToRemove = categoryDoc.items.id(clothesId);
       if (!itemToRemove) {
-          return res.status(404).json({ error: `Item ${clothesId} not found in category ${category}` });
+        return res.status(404).json({ error: `Item ${clothesId} not found in category ${category}` });
       }
-
-      // Step 3: Define Cloudinary folder path
+      console.log(`Deleting item: ${itemToRemove.name}`);
+      // Step 3: Delete files from Firebase Storage
       const folderPrefix = `veloura_clothes/${itemToRemove.name}/`;
-      console.log(`Deleting images from Cloudinary folder: ${folderPrefix}`);
-      // Step 4: Delete all images in the folder from Cloudinary
-      const { resources } = await cloudinary.api.resources({
-          type: 'upload',
-          prefix: folderPrefix,
-          max_results: 100,
-      });
 
-      const deletePromises = resources.map(resource =>
-          cloudinary.uploader.destroy(resource.public_id)
-      );
+      // List all files with that prefix and delete
+      const [files] = await bucket.getFiles({ prefix: folderPrefix });
 
+      const deletePromises = files.map(file => file.delete());
       await Promise.all(deletePromises);
 
-      // Step 5: Remove the item and save
+      console.log(`Deleted ${files.length} files from Firebase folder: ${folderPrefix}`);
+
+      // Step 4: Remove the item and save
       itemToRemove.remove();
       await categoryDoc.save();
 
       res.status(200).json({ message: "Clothing item and associated images deleted successfully." });
-  } catch (error) {
+    } catch (error) {
+      console.error("Delete Error:", error);
       next(error);
+    }
   }
-});
+);
 
 ClothesRouter.route('/:category/:clothesId/newdiscount')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
