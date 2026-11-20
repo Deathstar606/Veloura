@@ -10,7 +10,7 @@ const VoucherRouter = express.Router();
 VoucherRouter.use(bodyParser.json());
 
 VoucherRouter.route('/')
-.options(cors.corsWithOptions, authenticate.verifyUser, (req, res) => { res.sendStatus(200); })
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.cors, async (req, res, next) => {
     try {
         const voucher = await Vouchers.find(req.query);

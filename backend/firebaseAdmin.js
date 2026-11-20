@@ -1,15 +1,35 @@
 // firebaseAdmin.js
 const admin = require("firebase-admin");
+const fs = require("fs");
 const path = require("path");
 
-// Replace this with the path to your downloaded service account key JSON
-const serviceAccount = require(path.join(__dirname, "veloura-firebase-adminsdk.json"));
+let bucket = null;
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  storageBucket: "veloura-ab34a.firebasestorage.app"
-});
+try {
+  let serviceAccount = null;
 
-const bucket = admin.storage().bucket();
+  if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+  } else {
+    const keyPath = path.join(__dirname, "veloura-firebase-adminsdk.json");
+    if (fs.existsSync(keyPath)) {
+      serviceAccount = require(keyPath);
+    }
+  }
+
+  if (serviceAccount) {
+    if (!admin.apps.length) {
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+        storageBucket: "veloura-ab34a.firebasestorage.app",
+      });
+    }
+    bucket = admin.storage().bucket();
+  } else {
+    console.warn("Firebase service account not configured; storage deletion disabled.");
+  }
+} catch (err) {
+  console.error("Firebase Admin initialization error (continuing without bucket):", err.message);
+}
 
 module.exports = bucket;

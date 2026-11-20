@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const config = require('../config');
 
-const MONGODB_URI = config.mongoUrl;
+const MONGODB_URI = process.env.MONGO_URL || config.mongoUrl;
 
 if (!MONGODB_URI) {
   throw new Error('Please define the MONGODB_URI in config');
@@ -13,20 +13,29 @@ if (!cached) {
 }
 
 async function connectToDatabase() {
-  if (cached.conn) return cached.conn;
-  if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000, // 💡 fail fast if DB is unreachable
-    }).then((mongoose) => {
-      console.log("MongoDB connected successfully");
-      return mongoose;
-    }).catch((err) => {
-      console.error("MongoDB connection error:", err);
-      throw err;
-    });
+  if (cached.conn && mongoose.connection.readyState === 1) {
+    return cached.conn;
   }
+
+  if (!cached.promise) {
+    cached.promise = mongoose
+      .connect(MONGODB_URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        serverSelectionTimeoutMS: 8000,
+      })
+      .then((mongooseInstance) => {
+        console.log("MongoDB connected successfully");
+        return mongooseInstance;
+      })
+      .catch((err) => {
+        cached.promise = null;
+        cached.conn = null;
+        console.error("MongoDB connection error:", err);
+        throw err;
+      });
+  }
+
   cached.conn = await cached.promise;
   return cached.conn;
 }

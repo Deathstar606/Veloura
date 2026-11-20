@@ -99,16 +99,14 @@ ClothesRouter.route('/:category/:clothesId')
         return res.status(404).json({ error: `Item ${clothesId} not found in category ${category}` });
       }
       console.log(`Deleting item: ${itemToRemove.name}`);
-      // Step 3: Delete files from Firebase Storage
-      const folderPrefix = `veloura_clothes/${itemToRemove.name}/`;
-
-      // List all files with that prefix and delete
-      const [files] = await bucket.getFiles({ prefix: folderPrefix });
-
-      const deletePromises = files.map(file => file.delete());
-      await Promise.all(deletePromises);
-
-      console.log(`Deleted ${files.length} files from Firebase folder: ${folderPrefix}`);
+      // Step 3: Delete files from Firebase Storage (when configured)
+      if (bucket) {
+        const folderPrefix = `veloura_clothes/${itemToRemove.name}/`;
+        const [files] = await bucket.getFiles({ prefix: folderPrefix });
+        const deletePromises = files.map(file => file.delete());
+        await Promise.all(deletePromises);
+        console.log(`Deleted ${files.length} files from Firebase folder: ${folderPrefix}`);
+      }
 
       // Step 4: Remove the item and save
       itemToRemove.remove();
