@@ -44,7 +44,6 @@ const TextCycle = ({ texts }) => {
 
 const HeroSec = () => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [videoReady, setVideoReady] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -85,9 +84,6 @@ const HeroSec = () => {
         loop
         playsInline
         preload="auto"
-        onLoadedData={() => setVideoReady(true)}
-        onCanPlay={() => setVideoReady(true)}
-        style={{ opacity: videoReady ? 1 : 0 }}
       >
         <source src={demo} type="video/mp4" />
       </video>
